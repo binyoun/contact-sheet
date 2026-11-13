@@ -194,7 +194,7 @@ nav button b{color:var(--grease);font-weight:500}
         <input type="search" id="search" placeholder="Search name, place, word" aria-label="Search artists">
         <label class="t"><input type="checkbox" id="fClass"> From class materials</label>
         <label class="t"><input type="checkbox" id="fAward"> Prize winners</label>
-        <label class="t"><input type="checkbox" id="fKorea"> &#54620;&#44397; &#54788;&#45824;&#49324;&#51652;&#44032; (book)</label>
+        <label class="t"><input type="checkbox" id="fKorea"> Korean Contemporary Photographers (book)</label>
         <label class="t"><input type="checkbox" id="fHanoi"> Photo Hanoi biennale</label>
         <div id="groups"></div>
         <p><button class="btn sm" id="clear">Clear filters</button></p>
@@ -407,7 +407,7 @@ nav button b{color:var(--grease);font-weight:500}
       title = "More like " + src.name; count = "closest 8";
       html = cardHTML(src, {dev, i:0, plain:true}) + l.map((x,i) => cardHTML(x.a, {dev, i:i+1, plain:true, s:x.s, top:l[0].s})).join("");
     } else {
-      let list = ARTISTS.filter(a => (!fClass || a.robertson || a.courses.length) && (!fAward || a.award) && (!fKorea || a.lists.some(l => l.startsWith("\uD55C\uAD6D"))) && (!fHanoi || a.lists.some(l => l.startsWith("Photo Hanoi"))) && (!query || text(a).includes(query))).map(a => ({a, ...score(a)}));
+      let list = ARTISTS.filter(a => (!fClass || a.robertson || a.courses.length) && (!fAward || a.award) && (!fKorea || a.lists.some(l => l.startsWith("Korean Contemporary"))) && (!fHanoi || a.lists.some(l => l.startsWith("Photo Hanoi"))) && (!query || text(a).includes(query))).map(a => ({a, ...score(a)}));
       if (any) {
         list = list.filter(x => x.s > 0).sort((x,y) => y.s - x.s || x.a.name.localeCompare(y.a.name));
         const top = list.length ? list[0].s : 1;
