@@ -194,6 +194,8 @@ nav button b{color:var(--grease);font-weight:500}
         <input type="search" id="search" placeholder="Search name, place, word" aria-label="Search artists">
         <label class="t"><input type="checkbox" id="fClass"> From class materials</label>
         <label class="t"><input type="checkbox" id="fAward"> Prize winners</label>
+        <label class="t"><input type="checkbox" id="fKorea"> &#54620;&#44397; &#54788;&#45824;&#49324;&#51652;&#44032; (book)</label>
+        <label class="t"><input type="checkbox" id="fHanoi"> Photo Hanoi biennale</label>
         <div id="groups"></div>
         <p><button class="btn sm" id="clear">Clear filters</button></p>
       </aside>
@@ -267,7 +269,7 @@ nav button b{color:var(--grease);font-weight:500}
 
   // ---------- state ----------
   const sel = {}; FACETS.forEach(f => sel[f] = new Set());
-  let path = "free", step = 0, mode = "match", likeOf = null, pulled = [], query = "", fClass = false, fAward = false, picks = [];
+  let path = "free", step = 0, mode = "match", likeOf = null, pulled = [], query = "", fClass = false, fAward = false, fKorea = false, fHanoi = false, picks = [];
   try { picks = JSON.parse(localStorage.getItem("lensmatch.picks") || "[]"); } catch(e) { picks = []; }
   try { const p = localStorage.getItem("lensmatch.path"); if (p && PATHS[p]) path = p; } catch(e) {}
   function savePicks(){ try { localStorage.setItem("lensmatch.picks", JSON.stringify(picks)); } catch(e) {} $("pickCount").textContent = picks.length; }
@@ -346,7 +348,9 @@ nav button b{color:var(--grease);font-weight:500}
   $("search").addEventListener("input", e => { query = e.target.value.trim().toLowerCase(); mode = "match"; render(false); });
   $("fClass").addEventListener("change", e => { fClass = e.target.checked; mode = "match"; render(false); });
   $("fAward").addEventListener("change", e => { fAward = e.target.checked; mode = "match"; render(false); });
-  $("clear").onclick = () => { clearSel(); query = ""; $("search").value = ""; fClass = fAward = false; $("fClass").checked = $("fAward").checked = false; mode = "match"; syncSide(); render(false); };
+  $("fKorea").addEventListener("change", e => { fKorea = e.target.checked; mode = "match"; render(false); });
+  $("fHanoi").addEventListener("change", e => { fHanoi = e.target.checked; mode = "match"; render(false); });
+  $("clear").onclick = () => { clearSel(); query = ""; $("search").value = ""; fClass = fAward = fKorea = fHanoi = false; ["fClass","fAward","fKorea","fHanoi"].forEach(i => $(i).checked = false); mode = "match"; syncSide(); render(false); };
   $("again").onclick = () => { pull(); render(true); };
   $("backMatches").onclick = () => { mode = "match"; render(true); };
 
@@ -359,21 +363,22 @@ nav button b{color:var(--grease);font-weight:500}
   function similar(a, b){
     let s = 0; FACETS.forEach(f => a[f].forEach(k => { if (b[f].includes(k)) s += WEIGHT[f]; })); return s;
   }
-  const text = a => (a.name+" "+a.place+" "+a.work+" "+a.blurb+" "+a.award+" "+a.courses.join(" ")+" "+FACETS.map(f => a[f].map(k => label(f,k)).join(" ")).join(" ")).toLowerCase();
+  const text = a => (a.name+" "+a.alt+" "+a.lists.join(" ")+" "+a.place+" "+a.work+" "+a.blurb+" "+a.award+" "+a.courses.join(" ")+" "+FACETS.map(f => a[f].map(k => label(f,k)).join(" ")).join(" ")).toLowerCase();
   const when = a => a.year ? ((a.name.startsWith("The Propeller") || a.name.startsWith("Toiletpaper")) ? "est. " : "b. ") + a.year + " · " : "";
 
   function cardHTML(a, o){
     o = o || {};
-    const picked = picks.includes(a.name), q = encodeURIComponent(a.name);
+    const picked = picks.includes(a.name), q = encodeURIComponent(a.name), q2 = encodeURIComponent(a.alt ? a.alt + " \uC0AC\uC9C4\uAC00 " + a.name : a.name + " photography " + a.work.split(" (")[0]);
     const tags = FACETS.map(f => a[f].map(k => `<span class="tag ${sel[f].has(k) && !o.plain ? "hit" : ""}">${esc(label(f,k))}</span>`).join("")).join("");
     const badges = (a.robertson ? `<span class="badge c">Class list</span>` : "") +
       a.courses.filter(c => !(a.robertson && c === "Creative Photography")).map(c => `<span class="badge c">${esc(c)}</span>`).join("") +
+      a.lists.map(l => `<span class="badge">${esc(l)}</span>`).join("") +
       (a.award ? `<span class="badge w">${esc(a.award)}</span>` : "");
     const meter = o.top ? `<div class="meter">Match ${[1,2,3,4,5].map(i => `<i class="${i <= Math.max(1, Math.round(o.s / o.top * 5)) ? "on" : ""}"></i>`).join("")}</div>` : "";
     return `<article class="card ${o.dev ? "dev" : ""} ${picked ? "picked" : ""} ${o.wild ? "wild" : ""}" style="animation-delay:${Math.min(o.i || 0, 11) * 70}ms">
       <div class="strip"><span>${o.wild ? "Wildcard" : "CS 400"}</span><span>&#9656; ${String((o.i || 0) + 1).padStart(2,"0")}${(o.i || 0) % 2 ? "A" : ""}</span></div>
       <div class="in">
-        <div><h3>${esc(a.name)}</h3><div class="meta">${when(a)}${esc(a.place)}</div></div>
+        <div><h3>${esc(a.name)}</h3><div class="meta">${a.alt ? esc(a.alt) + " \u00B7 " : ""}${when(a)}${esc(a.place)}</div></div>
         ${badges ? `<div class="badges">${badges}</div>` : ""}
         ${meter}
         ${o.wild ? `<div class="wildnote">not what you asked for. look anyway.</div>` : (o.hits && o.hits.length ? `<div class="why">${esc(o.hits.slice(0,5).join(" + ").toLowerCase())}</div>` : "")}
@@ -382,7 +387,7 @@ nav button b{color:var(--grease);font-weight:500}
         <div class="tags">${tags}</div>
         <div class="acts">
           ${a.url ? `<a href="${esc(a.url)}" target="_blank" rel="noopener">Website</a>` : `<a href="https://en.wikipedia.org/wiki/Special:Search?search=${q}" target="_blank" rel="noopener">Read</a>`}
-          <a href="https://www.google.com/search?q=${q}+photography+${encodeURIComponent(a.work.split(" (")[0])}" target="_blank" rel="noopener">See work</a>
+          <a href="https://www.google.com/search?q=${q2}" target="_blank" rel="noopener">See work</a>
           <button class="like" data-like="${esc(a.name)}">More like this</button>
           <button class="pick" data-pick="${esc(a.name)}">${picked ? "circled" : "circle it"}</button>
         </div>
@@ -402,7 +407,7 @@ nav button b{color:var(--grease);font-weight:500}
       title = "More like " + src.name; count = "closest 8";
       html = cardHTML(src, {dev, i:0, plain:true}) + l.map((x,i) => cardHTML(x.a, {dev, i:i+1, plain:true, s:x.s, top:l[0].s})).join("");
     } else {
-      let list = ARTISTS.filter(a => (!fClass || a.robertson || a.courses.length) && (!fAward || a.award) && (!query || text(a).includes(query))).map(a => ({a, ...score(a)}));
+      let list = ARTISTS.filter(a => (!fClass || a.robertson || a.courses.length) && (!fAward || a.award) && (!fKorea || a.lists.some(l => l.startsWith("\uD55C\uAD6D"))) && (!fHanoi || a.lists.some(l => l.startsWith("Photo Hanoi"))) && (!query || text(a).includes(query))).map(a => ({a, ...score(a)}));
       if (any) {
         list = list.filter(x => x.s > 0).sort((x,y) => y.s - x.s || x.a.name.localeCompare(y.a.name));
         const top = list.length ? list[0].s : 1;
