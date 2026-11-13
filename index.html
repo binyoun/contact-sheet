@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact Sheet: an artist finder for photography projects</title>
+<meta name="description" content="Find photographers and lens-based artists for your photography assignment.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@600;700&family=DM+Mono:wght@400;500&family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --film:#0d0d0c; --film2:#1a1917; --paper:#f1ede2; --ink:#141412; --dim:#8d897e;
+  --edge:#ffb300; --grease:#ff3d2e; --line:#33312c;
+  --mono:"DM Mono",ui-monospace,Menlo,monospace; --hand:Caveat,"Bradley Hand",cursive;
+  --disp:Anton,"Arial Narrow",Impact,sans-serif; --body:Archivo,system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--film);color:var(--paper);font:16px/1.5 var(--body)}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;padding:0}
+a{color:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:0 16px}
+.sprockets{height:14px;background:
+  repeating-linear-gradient(90deg,transparent 0 12px,var(--paper) 12px 24px,transparent 24px 36px) center/auto 8px no-repeat}
+.sprockets.dim{opacity:.22}
+
+/* top strip */
+header.top{position:sticky;top:0;z-index:10;background:var(--film);border-bottom:1px solid var(--line)}
+header.top .row{display:flex;align-items:center;gap:14px;padding:8px 16px;flex-wrap:wrap}
+.brand{font-family:var(--disp);font-size:26px;letter-spacing:.04em;text-transform:uppercase;line-height:1}
+.brand i{font-style:normal;color:var(--edge)}
+.edge{font-family:var(--mono);font-size:12px;color:var(--edge);letter-spacing:.12em;text-transform:uppercase}
+nav{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
+nav button{font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.08em;padding:7px 12px;border:1px solid transparent;border-radius:3px}
+nav button[aria-current="true"]{border-color:var(--edge);color:var(--edge)}
+nav button b{color:var(--grease);font-weight:500}
+
+.view{display:none;padding:34px 0 90px}
+.view.on{display:block}
+
+/* home */
+.hero h1{font-family:var(--disp);font-weight:400;text-transform:uppercase;font-size:clamp(46px,9vw,118px);line-height:.92;margin:0;letter-spacing:.01em}
+.hero h1 em{font-style:normal;color:var(--edge)}
+.hero .scribble{font-family:var(--hand);color:var(--grease);font-size:clamp(22px,3vw,32px);transform:rotate(-2deg);display:inline-block;margin:10px 0 0 4px}
+.hero p.lead{max-width:56ch;color:#cfcabd;font-size:18px;margin:18px 0 0}
+.rolls-title{margin:44px 0 12px}
+.rolls{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px}
+.roll{text-align:left;background:var(--film2);border:1px solid var(--line);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;transition:transform .15s}
+.roll:hover{transform:translateY(-4px) rotate(-.6deg);border-color:var(--edge)}
+.roll .label{padding:14px 14px 12px;color:var(--ink);min-height:92px}
+.roll .label small{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;display:block;opacity:.75}
+.roll .label b{font-family:var(--disp);font-weight:400;font-size:27px;line-height:1;text-transform:uppercase;display:block;margin-top:4px}
+.roll .body{padding:12px 14px 16px;color:#cfcabd;font-size:14.5px;flex:1}
+.roll .go{font-family:var(--mono);font-size:12px;color:var(--edge);letter-spacing:.1em;text-transform:uppercase;padding:0 14px 14px}
+.home-extra{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.btn{font-family:var(--mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--paper);border-radius:3px;padding:10px 16px}
+.btn:hover{background:var(--paper);color:var(--ink)}
+.btn.hot{background:var(--edge);border-color:var(--edge);color:var(--ink)}
+.btn.sm{padding:6px 10px;font-size:12px}
+.fine{color:var(--dim);font-size:13.5px;max-width:78ch;margin-top:40px}
+
+/* quiz */
+.quiz{max-width:900px}
+.quiz .counter{display:flex;gap:16px;align-items:center}
+.quiz h2{font-family:var(--disp);font-weight:400;text-transform:uppercase;font-size:clamp(34px,6vw,64px);line-height:.98;margin:12px 0 6px}
+.quiz .sub{font-family:var(--hand);font-size:25px;color:var(--grease);margin:0 0 22px;transform:rotate(-.6deg)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{font-family:var(--mono);font-size:13.5px;letter-spacing:.06em;text-transform:uppercase;background:#242320;color:var(--paper);
+  padding:9px 13px;border-radius:3px;box-shadow:inset 0 -2px 0 #0008, inset 0 1px 0 #fff1;text-align:left}
+.opt small{display:block;text-transform:none;letter-spacing:0;font-family:var(--body);color:var(--dim);font-size:13px;margin-top:2px}
+.opt:hover{background:#34322d}
+.opt[aria-pressed="true"]{background:var(--edge);color:var(--ink);transform:rotate(-1deg)}
+.opt[aria-pressed="true"] small{color:#3a2c00}
+.opts.big .opt{flex:1 1 230px;padding:13px 14px}
+.quiz-nav{display:flex;gap:10px;margin-top:34px;align-items:center;flex-wrap:wrap}
+.quiz-nav .sp{flex:1}
+.shutter{width:86px;height:86px;border-radius:50%;background:var(--grease);border:5px solid var(--paper);box-shadow:0 0 0 3px var(--film),0 0 0 5px var(--grease);
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:#fff;transition:transform .08s}
+.shutter:active{transform:scale(.92)}
+#flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:50}
+#flash.go{animation:flash .45s ease-out}
+@keyframes flash{0%{opacity:.95}100%{opacity:0}}
+
+/* results */
+.layout{display:grid;grid-template-columns:250px 1fr;gap:26px;align-items:start}
+.side{position:sticky;top:62px;max-height:calc(100vh - 76px);overflow:auto;padding-right:4px}
+.side input[type=search]{width:100%;background:#242320;border:1px solid var(--line);color:var(--paper);font:14px var(--mono);padding:10px 12px;border-radius:3px}
+.side label.t{display:flex;gap:8px;align-items:center;font-family:var(--mono);font-size:12.5px;text-transform:uppercase;letter-spacing:.06em;color:#cfcabd;padding:8px 0 0}
+.side details{border-top:1px solid var(--line);padding:9px 0;margin-top:9px}
+.side summary{font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--edge);cursor:pointer;list-style:none;display:flex;justify-content:space-between}
+.side summary::after{content:"+"}
+.side details[open] summary::after{content:"\2212"}
+.side .opts{margin-top:9px;gap:5px}
+.side .opt{font-size:11.5px;padding:5px 8px}
+.head{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap;margin-bottom:8px}
+.head h2{font-family:var(--disp);font-weight:400;text-transform:uppercase;font-size:clamp(30px,5vw,52px);line-height:1;margin:0}
+.head .sp{flex:1}
+.brief{font-family:var(--hand);font-size:23px;line-height:1.2;color:var(--grease);max-width:70ch;margin:4px 0 18px;transform:rotate(-.4deg)}
+.brief:empty{display:none}
+.sheet{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:22px 16px}
+
+.card{position:relative;background:var(--paper);color:var(--ink);border-radius:2px;display:flex;flex-direction:column;box-shadow:0 0 0 7px #000}
+.card.dev{animation:dev .9s both}
+@keyframes dev{0%{filter:blur(7px) brightness(.25) sepia(1);opacity:.3}60%{filter:blur(1px) brightness(.85) sepia(.5)}100%{filter:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.card.dev,#flash.go{animation:none}}
+.card .strip{background:#000;color:var(--edge);font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;display:flex;justify-content:space-between;padding:1px 6px 5px}
+.card .in{padding:14px 15px 14px;display:flex;flex-direction:column;gap:9px;flex:1}
+.card h3{font-family:var(--disp);font-weight:400;text-transform:uppercase;font-size:31px;line-height:.98;margin:0;letter-spacing:.01em}
+.card .meta{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:#55524a}
+.badges{display:flex;gap:5px;flex-wrap:wrap}
+.badge{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--ink);padding:1px 6px;border-radius:2px}
+.badge.c{background:var(--ink);color:var(--paper)}
+.badge.w{background:var(--edge);border-color:var(--edge)}
+.meter{display:flex;gap:3px;align-items:center;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#55524a}
+.meter i{width:16px;height:7px;background:#cfc9b8;display:block}
+.meter i.on{background:var(--grease)}
+.why{font-family:var(--hand);font-size:21px;line-height:1.1;color:#d42a1c;transform:rotate(-.8deg)}
+.card p{margin:0;font-size:15px}
+.work{font-size:13.5px;color:#55524a}
+.work b{color:var(--ink);font-weight:600}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;border:1px solid #b9b3a2;padding:1px 5px;border-radius:2px;color:#55524a}
+.tag.hit{background:var(--edge);border-color:var(--edge);color:var(--ink)}
+.acts{display:flex;gap:10px 12px;flex-wrap:wrap;margin-top:auto;padding-top:8px;align-items:center;font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+.acts a,.acts .like{text-decoration:underline;text-underline-offset:3px}
+.acts .pick{margin-left:auto;border:2px solid var(--grease);color:#d42a1c;border-radius:50%;padding:5px 12px;font-family:var(--hand);font-size:19px;text-transform:none;letter-spacing:0;transform:rotate(-3deg)}
+.card.picked .pick{background:var(--grease);color:#fff}
+.card.picked::after{content:"";position:absolute;inset:-12px -9px;border:4px solid var(--grease);border-radius:47% 53% 50% 50% / 11% 9% 12% 10%;transform:rotate(-1.2deg);pointer-events:none;opacity:.9}
+.card.wild .strip{color:var(--grease)}
+.wildnote{font-family:var(--hand);font-size:21px;color:#d42a1c}
+.empty{font-family:var(--hand);font-size:26px;color:var(--grease);padding:30px 0}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--edge);color:var(--ink);font-family:var(--mono);font-size:13px;text-transform:uppercase;letter-spacing:.06em;padding:8px 14px;border-radius:3px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:60}
+#toast.on{opacity:1}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 26px}
+
+@media (max-width:860px){
+  .layout{grid-template-columns:1fr}
+  .side{position:static;max-height:none}
+  .layout > .side{order:2;margin-top:30px}
+}
+@media print{
+  header.top,.side,.acts,.tools,#toast,.sprockets{display:none!important}
+  body{background:#fff;color:#000}.card{box-shadow:0 0 0 1px #000;break-inside:avoid}.card.picked::after{display:none}
+  .head h2{color:#000}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="sprockets dim"></div>
+  <div class="wrap row">
+    <button class="brand" data-go="home">Contact<i>Sheet</i></button>
+    <span class="edge" id="counter">36 exp</span>
+    <nav>
+      <button data-go="home">Load film</button>
+      <button data-go="sheet">All artists</button>
+      <button data-go="picks">My picks <b id="pickCount">0</b></button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="view hero" id="v-home">
+    <h1>Find your <em>people</em><br>behind the lens.</h1>
+    <div class="scribble">find your photographers, circle the keepers</div>
+    <p class="lead">Pick your assignment, answer a few quick questions, and develop a contact sheet of photographers and lens-based artists to research for your project.</p>
+    <div class="edge rolls-title">Step 1 &#9656; Load your film</div>
+    <div class="rolls" id="rolls"></div>
+    <div class="home-extra">
+      <button class="btn hot" id="pull">Surprise me: pull 3 frames</button>
+      <button class="btn" data-go="sheet">See all artists</button>
+    </div>
+    <p class="fine">Artists come from the class list based on Robertson and McDaniel, <i>Themes of Contemporary Art: Visual Art after 1980</i>, from your course materials, and from recent photography prizes and magazines. A match is a starting point, not an answer: look at the real work, read about it, then decide what you can learn from it. Always reference the artists who inspire you.</p>
+  </section>
+
+  <section class="view quiz" id="v-quiz">
+    <div class="counter"><span class="edge" id="qMeta"></span><span class="edge" id="qRoll" style="color:var(--dim)"></span></div>
+    <h2 id="qTitle"></h2>
+    <p class="sub" id="qSub"></p>
+    <div id="qOpts"></div>
+    <div class="quiz-nav">
+      <button class="btn" id="qBack">Back</button>
+      <span class="sp"></span>
+      <button class="btn" id="qSkip">Skip</button>
+      <button class="btn hot" id="qNext">Next frame</button>
+      <button class="shutter" id="qShoot" hidden>Develop</button>
+    </div>
+  </section>
+
+  <section class="view" id="v-sheet">
+    <div class="layout">
+      <aside class="side">
+        <input type="search" id="search" placeholder="Search name, place, word" aria-label="Search artists">
+        <label class="t"><input type="checkbox" id="fClass"> From class materials</label>
+        <label class="t"><input type="checkbox" id="fAward"> Prize winners</label>
+        <div id="groups"></div>
+        <p><button class="btn sm" id="clear">Clear filters</button></p>
+      </aside>
+      <div>
+        <div class="head">
+          <h2 id="resTitle"></h2><span class="edge" id="resCount"></span><span class="sp"></span>
+          <button class="btn sm" id="again" hidden>Pull again</button>
+          <button class="btn sm" id="backMatches" hidden>Back to my matches</button>
+        </div>
+        <div class="brief" id="brief"></div>
+        <div class="sheet" id="cards"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="v-picks">
+    <div class="head"><h2>My picks</h2><span class="edge" id="picksFor"></span></div>
+    <div class="brief" id="picksBrief"></div>
+    <div class="tools">
+      <button class="btn hot sm" id="copyPicks">Copy for my proposal</button>
+      <button class="btn sm" id="printPicks">Print</button>
+      <button class="btn sm" id="clearPicks">Clear picks</button>
+    </div>
+    <div class="sheet" id="pickCards"></div>
+  </section>
+</main>
+<div id="flash"></div>
+<div id="toast" role="status"></div>
+
+<script src="artists.js"></script>
+<script>
+(function(){
+  const FACETS = ["themes","interests","genres","techniques","moods"];
+  const WEIGHT = {themes:3, interests:2, genres:3, techniques:2, moods:2};
+  const FNAME = {themes:"Big ideas", interests:"Subjects", genres:"Genres", techniques:"Techniques", moods:"Mood"};
+  const label = (f,k) => f==="themes" ? VOCAB.themes[k][0] : VOCAB[f][k];
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+  // ---------- assignment paths ----------
+  const Q = {
+    themes: {f:"themes", t:"What is it really about?", s:"pick up to 3 big ideas", max:3},
+    interests: {f:"interests", t:"What do you keep looking at?", s:"choose any subjects that pull you in"},
+    genres: {f:"genres", t:"What kind of pictures?", s:"choose the genres closest to your plan"},
+    techniques: {f:"techniques", t:"How do you want to make it?", s:"things you do now, or want to try"},
+    moods: {f:"moods", t:"What should it feel like?", s:"pick the mood of your moodboard"}
+  };
+  const PATHS = {
+    p101: {course:"Photo 101", title:"A3 Final Folio", color:"#ffb300",
+      blurb:"20 to 30 connected images on a theme you care about. Find photographers for your moodboard and consultation.",
+      brief:"A3 Final Folio: pick 2 or 3 photographers here, collect 5 to 10 of their images for your moodboard, and bring it to your consultation.",
+      steps:[Q.interests,
+        {...Q.genres, s:"your folio needs 2 or 3 main genres", max:3, only:["landscape","documentary","portrait","street","conceptual","photojournalism","fashion","stilllife"]},
+        Q.moods]},
+    creative: {course:"Creative Photography", title:"Final Project", color:"#ff3d2e",
+      blurb:"Your own concept, 10 to 30 images. Find artists whose ideas and methods you can push further.",
+      brief:"Final Project: look for an artist whose idea AND method you can learn from, then find their photobook in the library.",
+      steps:[Q.themes, Q.interests,
+        {...Q.techniques, s:"from class: black and white, glitch, creative light, layering, beyond the medium", only:["bw","glitch","lightpaint","multiexp","longexposure","collage","handworked","altprocess","cameraless","composite","cgi","text","performance","installation","studio","appropriation"]},
+        Q.moods]},
+    commercial: {course:"Commercial Photography", title:"A2 Final Project", color:"#7fd4c1",
+      strict:true, blurb:"A client brief in food, drink, product, portrait, interiors, lifestyle or fashion. Find a visual direction.",
+      brief:"A2 brief: study how these photographers light, style and keep a series consistent, then use them in your moodboard or brand reference sheet.",
+      steps:[{...Q.genres, t:"Which brief did you choose?", s:"pick your brief", only:["food","product","portrait","architecture","lifestyle","fashion","stilllife"]},
+        {...Q.moods, t:"What should the brand feel like?", s:"pick the visual direction"},
+        {...Q.techniques, s:"optional: how will you make it?", only:["studio","color","bw","composite","snapshot","largeformat","typology","night"]}]},
+    free: {course:"No assignment", title:"Just exploring", color:"#f1ede2",
+      blurb:"All five questions, no rules. Good for consultations and for getting unstuck.",
+      brief:"", steps:[Q.themes, Q.interests, Q.genres, Q.techniques, Q.moods]}
+  };
+
+  // ---------- state ----------
+  const sel = {}; FACETS.forEach(f => sel[f] = new Set());
+  let path = "free", step = 0, mode = "match", likeOf = null, pulled = [], query = "", fClass = false, fAward = false, picks = [];
+  try { picks = JSON.parse(localStorage.getItem("lensmatch.picks") || "[]"); } catch(e) { picks = []; }
+  try { const p = localStorage.getItem("lensmatch.path"); if (p && PATHS[p]) path = p; } catch(e) {}
+  function savePicks(){ try { localStorage.setItem("lensmatch.picks", JSON.stringify(picks)); } catch(e) {} $("pickCount").textContent = picks.length; }
+  const clearSel = () => FACETS.forEach(f => sel[f].clear());
+
+  // ---------- navigation ----------
+  function go(v){
+    document.querySelectorAll(".view").forEach(s => s.classList.toggle("on", s.id === "v-"+v));
+    document.querySelectorAll("nav button").forEach(b => b.setAttribute("aria-current", b.dataset.go === v));
+    if (v === "sheet") { syncSide(); render(true); }
+    if (v === "picks") renderPicks();
+    $("counter").textContent = "An artist finder for photography projects \u00B7 " + ARTISTS.length + " frames";
+    window.scrollTo(0,0);
+  }
+  document.addEventListener("click", e => {
+    const b = e.target.closest("[data-go]"); if (!b) return;
+    if (b.dataset.go === "sheet") mode = "match";
+    go(b.dataset.go);
+  });
+
+  // ---------- home ----------
+  $("rolls").innerHTML = Object.entries(PATHS).map(([k,p]) =>
+    `<button class="roll" data-path="${k}"><div class="sprockets dim"></div><div class="label" style="background:${p.color}"><small>${esc(p.course)}</small><b>${esc(p.title)}</b></div><div class="body">${esc(p.blurb)}</div><div class="go">Load &#9656;</div></button>`).join("");
+  $("rolls").addEventListener("click", e => {
+    const b = e.target.closest("[data-path]"); if (!b) return;
+    path = b.dataset.path; try { localStorage.setItem("lensmatch.path", path); } catch(e) {}
+    clearSel(); step = 0; mode = "match"; go("quiz"); renderQuiz();
+  });
+  $("pull").onclick = () => { pull(); go("sheet"); };
+  function pull(){ mode = "pull"; pulled = [...ARTISTS].sort(() => Math.random() - .5).slice(0,3); }
+
+  // ---------- quiz ----------
+  function optsHTML(f, only, big){
+    const keys = only || Object.keys(VOCAB[f]);
+    return `<div class="opts ${big ? "big" : ""}">` + keys.map(k =>
+      `<button class="opt" data-f="${f}" data-k="${k}" aria-pressed="${sel[f].has(k)}">${esc(label(f,k))}${f==="themes" && big ? `<small>${esc(VOCAB.themes[k][1])}</small>` : ""}</button>`).join("") + `</div>`;
+  }
+  function renderQuiz(){
+    const P = PATHS[path], st = P.steps[step], last = step === P.steps.length - 1;
+    $("qMeta").textContent = `Frame ${step+1} / ${P.steps.length}`;
+    $("qRoll").textContent = P.course + " ▸ " + P.title;
+    $("qTitle").textContent = st.t; $("qSub").textContent = st.s;
+    $("qOpts").innerHTML = optsHTML(st.f, st.only, st.f === "themes");
+    $("qOpts").dataset.max = st.max || "";
+    $("qBack").style.visibility = step ? "visible" : "hidden";
+    $("qNext").hidden = last; $("qSkip").hidden = last; $("qShoot").hidden = !last;
+  }
+  function develop(){
+    const fl = $("flash"); fl.classList.remove("go"); void fl.offsetWidth; fl.classList.add("go");
+    mode = "match"; go("sheet");
+  }
+  $("qNext").onclick = () => { step++; renderQuiz(); window.scrollTo(0,0); };
+  $("qSkip").onclick = () => { sel[PATHS[path].steps[step].f].clear(); step++; renderQuiz(); };
+  $("qBack").onclick = () => { if (step) { step--; renderQuiz(); } };
+  $("qShoot").onclick = develop;
+
+  document.addEventListener("click", e => {
+    const b = e.target.closest(".opt"); if (!b) return;
+    const f = b.dataset.f, k = b.dataset.k, inQuiz = !!b.closest("#v-quiz");
+    if (sel[f].has(k)) sel[f].delete(k);
+    else {
+      const max = inQuiz ? +($("qOpts").dataset.max || 0) : 0;
+      if (max && sel[f].size >= max) { toast("Pick up to " + max); return; }
+      sel[f].add(k);
+    }
+    b.setAttribute("aria-pressed", sel[f].has(k));
+    if (!inQuiz) { mode = "match"; render(false); }
+  });
+
+  // ---------- side filters ----------
+  $("groups").innerHTML = FACETS.map(f => `<details><summary>${FNAME[f]}</summary>${optsHTML(f)}</details>`).join("");
+  function syncSide(){
+    document.querySelectorAll("#groups .opt").forEach(b => b.setAttribute("aria-pressed", sel[b.dataset.f].has(b.dataset.k)));
+    document.querySelectorAll("#groups details").forEach((d,i) => { d.open = sel[FACETS[i]].size > 0; });
+  }
+  $("search").addEventListener("input", e => { query = e.target.value.trim().toLowerCase(); mode = "match"; render(false); });
+  $("fClass").addEventListener("change", e => { fClass = e.target.checked; mode = "match"; render(false); });
+  $("fAward").addEventListener("change", e => { fAward = e.target.checked; mode = "match"; render(false); });
+  $("clear").onclick = () => { clearSel(); query = ""; $("search").value = ""; fClass = fAward = false; $("fClass").checked = $("fAward").checked = false; mode = "match"; syncSide(); render(false); };
+  $("again").onclick = () => { pull(); render(true); };
+  $("backMatches").onclick = () => { mode = "match"; render(true); };
+
+  // ---------- matching ----------
+  function score(a){
+    let s = 0; const hits = [];
+    FACETS.forEach(f => a[f].forEach(k => { if (sel[f].has(k)) { s += WEIGHT[f]; hits.push(label(f,k)); } }));
+    return {s, hits};
+  }
+  function similar(a, b){
+    let s = 0; FACETS.forEach(f => a[f].forEach(k => { if (b[f].includes(k)) s += WEIGHT[f]; })); return s;
+  }
+  const text = a => (a.name+" "+a.place+" "+a.work+" "+a.blurb+" "+a.award+" "+a.courses.join(" ")+" "+FACETS.map(f => a[f].map(k => label(f,k)).join(" ")).join(" ")).toLowerCase();
+  const when = a => a.year ? ((a.name.startsWith("The Propeller") || a.name.startsWith("Toiletpaper")) ? "est. " : "b. ") + a.year + " · " : "";
+
+  function cardHTML(a, o){
+    o = o || {};
+    const picked = picks.includes(a.name), q = encodeURIComponent(a.name);
+    const tags = FACETS.map(f => a[f].map(k => `<span class="tag ${sel[f].has(k) && !o.plain ? "hit" : ""}">${esc(label(f,k))}</span>`).join("")).join("");
+    const badges = (a.robertson ? `<span class="badge c">Class list</span>` : "") +
+      a.courses.filter(c => !(a.robertson && c === "Creative Photography")).map(c => `<span class="badge c">${esc(c)}</span>`).join("") +
+      (a.award ? `<span class="badge w">${esc(a.award)}</span>` : "");
+    const meter = o.top ? `<div class="meter">Match ${[1,2,3,4,5].map(i => `<i class="${i <= Math.max(1, Math.round(o.s / o.top * 5)) ? "on" : ""}"></i>`).join("")}</div>` : "";
+    return `<article class="card ${o.dev ? "dev" : ""} ${picked ? "picked" : ""} ${o.wild ? "wild" : ""}" style="animation-delay:${Math.min(o.i || 0, 11) * 70}ms">
+      <div class="strip"><span>${o.wild ? "Wildcard" : "CS 400"}</span><span>&#9656; ${String((o.i || 0) + 1).padStart(2,"0")}${(o.i || 0) % 2 ? "A" : ""}</span></div>
+      <div class="in">
+        <div><h3>${esc(a.name)}</h3><div class="meta">${when(a)}${esc(a.place)}</div></div>
+        ${badges ? `<div class="badges">${badges}</div>` : ""}
+        ${meter}
+        ${o.wild ? `<div class="wildnote">not what you asked for. look anyway.</div>` : (o.hits && o.hits.length ? `<div class="why">${esc(o.hits.slice(0,5).join(" + ").toLowerCase())}</div>` : "")}
+        <p>${esc(a.blurb)}</p>
+        <div class="work">Start with: <b>${esc(a.work)}</b></div>
+        <div class="tags">${tags}</div>
+        <div class="acts">
+          ${a.url ? `<a href="${esc(a.url)}" target="_blank" rel="noopener">Website</a>` : `<a href="https://en.wikipedia.org/wiki/Special:Search?search=${q}" target="_blank" rel="noopener">Read</a>`}
+          <a href="https://www.google.com/search?q=${q}+photography+${encodeURIComponent(a.work.split(" (")[0])}" target="_blank" rel="noopener">See work</a>
+          <button class="like" data-like="${esc(a.name)}">More like this</button>
+          <button class="pick" data-pick="${esc(a.name)}">${picked ? "circled" : "circle it"}</button>
+        </div>
+      </div></article>`;
+  }
+
+  function render(dev){
+    const any = FACETS.some(f => sel[f].size), P = PATHS[path];
+    $("again").hidden = mode !== "pull"; $("backMatches").hidden = mode !== "like";
+    let html = "", title = "", count = "";
+    if (mode === "pull") {
+      title = "Three frames, pulled at random"; count = "no filter, no plan";
+      html = pulled.map((a,i) => cardHTML(a, {dev:true, i, plain:true})).join("");
+    } else if (mode === "like" && likeOf) {
+      const src = BY[likeOf];
+      const l = ARTISTS.filter(a => a !== src).map(a => ({a, s:similar(src,a)})).sort((x,y) => y.s - x.s).slice(0,8);
+      title = "More like " + src.name; count = "closest 8";
+      html = cardHTML(src, {dev, i:0, plain:true}) + l.map((x,i) => cardHTML(x.a, {dev, i:i+1, plain:true, s:x.s, top:l[0].s})).join("");
+    } else {
+      let list = ARTISTS.filter(a => (!fClass || a.robertson || a.courses.length) && (!fAward || a.award) && (!query || text(a).includes(query))).map(a => ({a, ...score(a)}));
+      if (any) {
+        list = list.filter(x => x.s > 0).sort((x,y) => y.s - x.s || x.a.name.localeCompare(y.a.name));
+        const top = list.length ? list[0].s : 1;
+        const need = P.strict && sel.genres.size;
+        const keep = x => x.s >= top * 0.45 && (!need || x.a.genres.some(k => sel.genres.has(k)));
+        const rest = list.filter(x => !keep(x));
+        list = list.filter(keep);
+        const wild = rest.length > 3 && list.length > 3 ? rest[Math.floor(Math.random() * rest.length)] : null;
+        const shown = list.slice(0, 60);
+        if (wild) shown.splice(3, 0, {...wild, wild:true});
+        title = "Your contact sheet"; count = list.length + (wild ? 1 : 0) + " frames · best match first";
+        html = shown.map((x,i) => cardHTML(x.a, {dev, i, hits:x.hits, s:x.s, top, wild:x.wild})).join("");
+      } else {
+        list.sort((x,y) => x.a.name.localeCompare(y.a.name));
+        title = "The whole contact sheet"; count = list.length + " frames";
+        html = list.map((x,i) => cardHTML(x.a, {dev: dev && i < 12, i})).join("");
+      }
+    }
+    $("resTitle").textContent = title; $("resCount").textContent = count;
+    $("brief").textContent = (mode === "match" && any && P.brief) ? P.brief + " Check Canvas for the full brief." : "";
+    $("cards").innerHTML = html || `<div class="empty">Nothing developed. Remove a filter and try again.</div>`;
+  }
+
+  // ---------- picks ----------
+  document.addEventListener("click", e => {
+    const l = e.target.closest("[data-like]");
+    if (l) { mode = "like"; likeOf = l.dataset.like; go("sheet"); return; }
+    const b = e.target.closest("[data-pick]"); if (!b) return;
+    const n = b.dataset.pick, i = picks.indexOf(n);
+    if (i >= 0) picks.splice(i,1); else picks.push(n);
+    savePicks();
+    const card = b.closest(".card"); card.classList.toggle("picked", i < 0); b.textContent = i < 0 ? "circled" : "circle it";
+    if (i < 0) toast("Circled. See My picks");
+    if (b.closest("#v-picks")) renderPicks();
+  });
+  const pickList = () => picks.map(n => BY[n]).filter(Boolean);
+  function renderPicks(){
+    const l = pickList(), P = PATHS[path];
+    $("picksFor").textContent = P.course + " ▸ " + P.title;
+    $("picksBrief").textContent = l.length ? "next: find 2 or 3 real images by each, and write one line on what you will borrow." : "";
+    $("pickCards").innerHTML = l.length ? l.map((a,i) => cardHTML(a, {i, plain:true})).join("")
+      : `<div class="empty">No picks yet. Press "circle it" on any frame.</div>`;
+  }
+  $("copyPicks").onclick = () => {
+    const l = pickList(), P = PATHS[path]; if (!l.length) { toast("No picks yet"); return; }
+    const chosen = FACETS.filter(f => sel[f].size).map(f => FNAME[f] + ": " + [...sel[f]].map(k => label(f,k)).join(", "));
+    const txt = `Artist research (Contact Sheet)\n${P.course}: ${P.title}\n` + (chosen.length ? "\nWhat I am looking for\n" + chosen.join("\n") + "\n" : "") +
+      "\nPhotographers I am researching\n" + l.map((a,i) => `${i+1}. ${a.name} (${when(a).replace(" · ", ", ")}${a.place})\n   Start with: ${a.work}\n   ${a.blurb}\n   What I will borrow: `).join("\n\n");
+    (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => toast("Copied"), () => toast("Copy not available here"));
+  };
+  $("printPicks").onclick = () => window.print();
+  $("clearPicks").onclick = () => { picks = []; savePicks(); renderPicks(); };
+
+  let tt; function toast(m){ const t = $("toast"); t.textContent = m; t.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("on"), 1700); }
+
+  savePicks(); go("home");
+})();
+</script>
+</body>
+</html>

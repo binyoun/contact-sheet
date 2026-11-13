@@ -1,0 +1,399 @@
+// Lens Match dataset.
+// A(name, birthYear, place, source, themes, interests, genres, techniques, keyWork, blurb)
+// source: "b" = discussed in Themes of Contemporary Art (to be checked against the book index), "a" = added beyond the book.
+// Tags are space-separated keys from the vocabularies in VOCAB below.
+
+const VOCAB = {
+  themes: {
+    identity: ["Identity", "Who we are: gender, race, culture, self and other"],
+    body: ["The Body", "The body as subject, site and material"],
+    time: ["Time", "Duration, change, the moment and the sequence"],
+    memory: ["Memory", "Personal and collective memory, history, archives"],
+    place: ["Place", "Home, landscape, borders, cities, belonging"],
+    language: ["Language", "Words, signs and stories inside images"],
+    science: ["Science", "Technology, nature, data, the constructed image"],
+    spirit: ["Spirituality", "Faith, ritual, the sacred, mortality"]
+  },
+  interests: {
+    family: "Family", gender: "Gender", queer: "Queer life", race: "Race and representation",
+    migration: "Migration and diaspora", youth: "Youth", intimacy: "Intimacy and relationships",
+    everyday: "Everyday life", city: "The city", nature: "Nature", climate: "Climate and environment",
+    war: "War and conflict", politics: "Politics and power", labor: "Work and labour",
+    consumer: "Consumer culture", media: "Media and pop culture", tech: "Technology and surveillance",
+    dreams: "Dreams and fantasy", death: "Loss and mortality", ritual: "Ritual and belief",
+    history: "History and heritage"
+  },
+  genres: {
+    portrait: "Portrait", self: "Self-portrait", documentary: "Documentary", landscape: "Landscape",
+    street: "Street", stilllife: "Still life", staged: "Staged / tableau", conceptual: "Conceptual",
+    fashion: "Fashion", architecture: "Architecture / interiors", abstract: "Abstract",
+    moving: "Moving image", archive: "Archive / found photo", diary: "Diary / snapshot",
+    photojournalism: "Photojournalism / editorial", food: "Food and drink", product: "Product / advertising",
+    lifestyle: "Lifestyle"
+  },
+  techniques: {
+    bw: "Black and white", color: "Colour", largeformat: "Large format", composite: "Digital composite",
+    collage: "Collage / montage", altprocess: "Alternative process", cameraless: "Cameraless / photogram",
+    longexposure: "Long exposure", appropriation: "Appropriation", text: "Text with image",
+    typology: "Series / typology", installation: "Installation", video: "Video",
+    snapshot: "Snapshot / flash", handworked: "Hand-worked print", performance: "Performance for camera",
+    aerial: "Aerial / elevated view", cgi: "CGI / AI / data", night: "Night / low light",
+    glitch: "Glitch / databending", lightpaint: "Light painting / creative light",
+    multiexp: "Multiple exposure / layering", studio: "Studio lighting"
+  },
+  moods: {
+    quiet: "Quiet and still", bold: "Loud and colourful", dark: "Dark and haunting", dreamy: "Dreamy and surreal",
+    raw: "Raw and direct", playful: "Playful and witty", cinematic: "Cinematic", tender: "Tender and intimate",
+    cool: "Cool and precise"
+  }
+};
+
+const ARTISTS = [];
+const BY = {};
+function A(name, year, place, src, themes, interests, genres, techniques, work, blurb, moods) {
+  const s = (v) => (v || "").split(" ").filter(Boolean);
+  const a = { name, year, place, themes: s(themes), interests: s(interests), genres: s(genres), techniques: s(techniques),
+    moods: s(moods), work, blurb, robertson: false, courses: [], award: "", url: "" };
+  ARTISTS.push(a); BY[name] = a;
+}
+const each = (names, fn) => names.split("|").forEach(n => { const a = BY[n.trim()]; if (a) fn(a); else console.error("Unknown artist in list:", n); });
+const ROBERTSON = (names) => each(names, a => { a.robertson = true; if (!a.courses.includes("Creative Photography")) a.courses.push("Creative Photography"); });
+const C = (course, names) => each(names, a => { if (!a.courses.includes(course)) a.courses.push(course); });
+const W = (name, award) => each(name, a => { a.award = award; });
+const U = (name, url) => each(name, a => { a.url = url; });
+const M = (mood, names) => each(names, a => { if (!a.moods.includes(mood)) a.moods.push(mood); });
+const T = (name, themes) => each(name, a => themes.split(" ").forEach(k => { if (!a.themes.includes(k)) a.themes.push(k); }));
+
+// ---------- Identity ----------
+A("Cindy Sherman", 1954, "USA", "b", "identity body", "gender media", "self staged conceptual", "color bw performance typology", "Untitled Film Stills (1977-80)", "Photographs herself as hundreds of invented characters to show how femininity is built from film, fashion and media stereotypes.");
+A("Shirin Neshat", 1957, "Iran / USA", "b", "identity language spirit body", "gender politics ritual migration", "portrait staged moving", "bw text handworked video installation", "Women of Allah (1993-97)", "Black and white portraits of veiled women inscribed with Persian poetry, exploring gender, faith and exile.");
+A("Carrie Mae Weems", 1953, "USA", "b", "identity memory language", "race family gender history", "staged portrait archive conceptual", "bw text typology appropriation", "The Kitchen Table Series (1990)", "Stages scenes of Black domestic life and reworks historical photographs to question who gets represented and how.");
+A("Lorna Simpson", 1960, "USA", "b", "identity language body memory", "race gender history", "conceptual portrait archive", "bw text collage typology", "Guarded Conditions (1989)", "Pairs cropped, faceless figures with fragments of text so the viewer has to confront their own assumptions about race and gender.");
+A("Yasumasa Morimura", 1951, "Japan", "b", "identity body", "gender media history", "self staged conceptual", "color composite appropriation performance", "Portrait (Futago) (1988)", "Inserts himself into famous Western paintings and celebrity portraits, crossing lines of gender, race and art history.");
+A("Nikki S. Lee", 1970, "South Korea / USA", "b", "identity", "youth migration everyday race", "self diary conceptual", "snapshot color performance typology", "Projects (1997-2001)", "Spent weeks joining different subcultures, then had a friend snapshot her as one of the group, showing identity as fluid and social.");
+A("Catherine Opie", 1961, "USA", "b", "identity body place", "queer gender family city", "portrait self landscape documentary", "color largeformat typology", "Being and Having (1991)", "Formal, richly coloured portraits of queer communities alongside quiet studies of American landscapes and freeways.");
+A("Gillian Wearing", 1963, "UK", "b", "identity language", "family everyday media", "portrait self conceptual moving", "color text performance video", "Signs that say what you want them to say... (1992-93)", "Asked strangers to write their private thoughts on a sign, and later wore masks of her own family members.");
+A("Renée Cox", 1960, "Jamaica / USA", "b", "identity body spirit", "race gender history", "self staged", "color performance appropriation", "Yo Mama's Last Supper (1996)", "Uses her own body to recast art history and religious imagery with powerful Black female figures.");
+A("Lyle Ashton Harris", 1965, "USA", "b", "identity body memory", "queer race family", "self portrait diary", "color collage performance installation", "Ektachrome Archive", "Self-portraits and diaristic collages exploring Black queer identity, family and desire.");
+A("Samuel Fosso", 1962, "Cameroon / Central African Republic", "a", "identity", "race politics history media", "self staged", "bw color performance", "African Spirits (2008)", "Began as a teenage studio photographer using leftover film on himself, later impersonating icons of Black history.");
+A("Zanele Muholi", 1972, "South Africa", "a", "identity body", "queer race gender politics", "portrait self documentary", "bw typology", "Somnyama Ngonyama (2012-)", "A self-described visual activist building an archive of Black LGBTQIA+ lives, and dramatic high-contrast self-portraits.");
+A("Tomoko Sawada", 1977, "Japan", "a", "identity", "gender youth everyday", "self conceptual", "color typology performance", "ID400 (1998)", "Photographed herself 400 times in a photo booth as 400 different women, asking how much appearance defines a person.");
+A("Pushpamala N.", 1956, "India", "a", "identity memory", "gender history media", "self staged", "performance appropriation color bw", "Native Women of South India (2000-04)", "Performs as characters from colonial ethnography, cinema and popular prints to unpick how Indian women have been pictured.");
+A("Tracey Moffatt", 1960, "Australia", "a", "identity memory place language", "race history family dreams", "staged moving", "color bw text typology", "Something More (1989)", "Cinematic, theatrical photo series that tell fragmented stories about race, memory and Australian history.");
+A("Hank Willis Thomas", 1976, "USA", "a", "identity language", "race consumer media politics", "conceptual archive", "appropriation text color", "Unbranded (2005-08)", "Strips the logos and slogans from advertisements to reveal what they say about race, gender and desire.");
+A("Deana Lawson", 1979, "USA", "a", "identity body spirit", "race family intimacy", "portrait staged", "color largeformat", "Centropy (2020)", "Carefully staged portraits of strangers in domestic interiors that feel both intimate and monumental.");
+A("Dawoud Bey", 1953, "USA", "a", "identity memory place", "race youth history", "portrait street landscape", "bw color largeformat", "The Birmingham Project (2012)", "Collaborative portraits of young people and communities, and landscapes that hold African American history.");
+A("Lalla Essaydi", 1956, "Morocco / USA", "a", "identity language body", "gender ritual history", "staged portrait", "text handworked color largeformat", "Converging Territories (2003-04)", "Covers women, cloth and walls in henna calligraphy to answer Orientalist painting from a woman's point of view.");
+A("Shadi Ghadirian", 1974, "Iran", "a", "identity time", "gender everyday history consumer", "staged portrait", "appropriation typology color", "Qajar (1998)", "Recreates 19th century Iranian studio portraits but hands the sitters a boombox, a Pepsi can or a vacuum cleaner.");
+A("Sunil Gupta", 1953, "India / UK", "a", "identity place", "queer migration city", "street portrait documentary", "color text", "Exiles (1986-87)", "Photographs gay life across Delhi, New York and London, mixing documentary and staged scenes.");
+A("Pixy Liao", 1979, "China / USA", "a", "identity body", "gender intimacy", "staged self portrait", "color performance", "Experimental Relationship (2007-)", "A long-running, playful series staged with her partner that flips expected roles in a relationship.");
+A("Oh Heinkuhn", 1963, "South Korea", "a", "identity", "youth gender everyday", "portrait documentary", "bw color typology", "Ajumma (1997-99)", "Typological portraits of social groups in Korea, from middle-aged women to schoolgirls and soldiers, showing unease under the uniform.");
+
+// ---------- The Body ----------
+A("Nan Goldin", 1953, "USA", "b", "body identity memory", "intimacy queer family death", "diary portrait documentary", "snapshot color installation", "The Ballad of Sexual Dependency (1986)", "A raw visual diary of her friends and lovers: love, addiction, illness and loss, shown as a slideshow with music.");
+A("Robert Mapplethorpe", 1946, "USA", "b", "body identity", "queer gender", "portrait stilllife", "bw", "Flowers and portraits (1970s-80s)", "Classically lit black and white studies of bodies, flowers and faces that treat every subject as sculpture.");
+A("Hannah Wilke", 1940, "USA", "b", "body identity", "gender death", "self conceptual", "bw color performance typology", "S.O.S. Starification Object Series (1974-82)", "Used her own body to question beauty and the female pose, later documenting her illness without flinching.");
+A("Ana Mendieta", 1948, "Cuba / USA", "b", "body place spirit", "nature ritual migration gender", "self conceptual", "performance color", "Silueta Series (1973-80)", "Pressed, burned and planted the outline of her body into the earth, with the photograph as the only lasting trace.");
+A("Zhang Huan", 1965, "China", "b", "body identity spirit language", "ritual politics", "self conceptual", "performance text color", "Family Tree (2000)", "Had calligraphers write on his face until it turned completely black; endurance performances made to be photographed.");
+A("Rineke Dijkstra", 1959, "Netherlands", "b", "body identity time", "youth gender", "portrait", "color largeformat typology", "Beach Portraits (1992-2002)", "Plain, full-length portraits of adolescents and people in transition, caught between pose and vulnerability.");
+A("Sally Mann", 1951, "USA", "b", "body memory place time", "family youth death nature history", "portrait landscape", "bw largeformat altprocess", "Immediate Family (1984-94)", "Photographed her children, her husband and the haunted landscape of the American South with antique cameras and wet plate collodion.");
+A("Francesca Woodman", 1958, "USA", "a", "body identity time", "gender youth dreams", "self staged", "bw longexposure performance", "House series (1975-76)", "Blurred, half-hidden self-portraits in decaying rooms where the body seems to dissolve into the walls.");
+A("Ishiuchi Miyako", 1947, "Japan", "a", "body memory time", "death history family", "stilllife documentary", "color bw typology", "Mother's (2000-05)", "Close, tender photographs of skin, scars and the belongings left behind, including clothes from Hiroshima.");
+A("Mari Katayama", 1987, "Japan", "a", "body identity", "gender", "self staged", "handworked color installation performance", "bystander (2016)", "Photographs herself surrounded by hand-sewn objects and soft sculptures that extend and celebrate her body.");
+A("Ren Hang", 1987, "China", "a", "body identity", "youth queer intimacy", "portrait staged", "snapshot color", "Untitled photographs (2008-17)", "Playful, direct flash photographs of friends' bodies arranged like sculpture on rooftops and in nature.");
+A("Viviane Sassen", 1972, "Netherlands", "a", "body place", "dreams", "fashion portrait abstract", "color collage", "Flamboya (2008)", "Bold shadow, colour and tangled limbs turn bodies into near-abstract shapes, moving between art and fashion.");
+A("Liu Bolin", 1973, "China", "a", "body place identity", "politics consumer city", "self conceptual", "performance color", "Hiding in the City (2005-)", "Has his body painted to vanish into supermarket shelves, walls and monuments: the invisible individual.");
+A("Ahn Jun", 1981, "South Korea", "a", "body place", "city youth", "self", "color performance aerial", "Self-Portrait (2008-13)", "Photographs herself perched on the edges of skyscrapers, between fear and freedom, the city far below.");
+
+// ---------- Time ----------
+A("Hiroshi Sugimoto", 1948, "Japan", "b", "time memory spirit science", "history nature death", "landscape architecture conceptual", "bw largeformat longexposure typology", "Theaters (1976-); Seascapes (1980-)", "Exposes a whole film onto a single frame, leaving a glowing blank screen; photographs the sea as the first humans saw it.");
+A("Bill Viola", 1951, "USA", "b", "time spirit body", "death ritual", "moving", "video installation", "The Crossing (1996)", "Extreme slow-motion video of figures consumed by water and fire, treating the screen as a space for contemplation.");
+A("Tacita Dean", 1965, "UK", "b", "time memory place", "nature history", "moving landscape archive", "installation handworked", "The Green Ray (2001)", "Works with analogue film to dwell on slowness, chance and things on the edge of disappearing.");
+A("Christian Marclay", 1955, "USA / Switzerland", "b", "time language", "media", "moving archive conceptual", "appropriation collage video cameraless altprocess", "The Clock (2010)", "A 24-hour film made of thousands of movie clips showing clocks, synchronised to real time; also large cyanotypes of cassette tape.");
+A("Duane Michals", 1932, "USA", "b", "time language spirit", "dreams death intimacy", "staged conceptual", "bw text typology handworked", "Things Are Queer (1973)", "Tells small philosophical stories through photo sequences with handwritten captions.");
+A("Abelardo Morell", 1948, "Cuba / USA", "b", "time place science", "everyday city", "architecture landscape stilllife", "longexposure altprocess bw color", "Camera Obscura series (1991-)", "Turns whole rooms into cameras so the outside world appears upside down on the walls and the bed.");
+A("Vera Lutter", 1960, "Germany / USA", "b", "time place", "city labor", "architecture landscape", "longexposure bw largeformat altprocess", "Pinhole camera obscura works", "Builds room-sized pinhole cameras and makes huge unique negative images over hours or days.");
+A("Michael Wesely", 1963, "Germany", "a", "time place", "city", "architecture stilllife", "longexposure color", "Open Shutter, MoMA (2001-04)", "Exposures lasting up to three years, so whole buildings rise and vanish inside one photograph.");
+A("Idris Khan", 1978, "UK", "b", "time language memory", "history", "conceptual abstract", "composite appropriation bw", "Every... Bernd and Hilla Becher Gable Sided Houses (2004)", "Layers every page of a book or every image in a series into one dense, vibrating photograph.");
+A("Uta Barth", 1958, "Germany / USA", "b", "time place", "everyday", "abstract conceptual", "color typology", "Ground (1994-97)", "Deliberately out-of-focus photographs of empty rooms and light, about the act of looking itself.");
+A("Atta Kim", 1956, "South Korea", "a", "time spirit", "city ritual", "conceptual street", "longexposure composite color", "ON-AIR Project (2002-)", "Eight-hour exposures that empty busy cities of people: everything that exists eventually disappears.");
+A("Chris McCaw", 1971, "USA", "a", "time science place", "nature", "landscape abstract", "longexposure altprocess bw largeformat", "Sunburn (2003-)", "Lets the sun physically burn its path across paper negatives during hours-long exposures.");
+A("Sharon Lockhart", 1964, "USA", "b", "time place", "labor youth everyday", "moving portrait documentary", "video color largeformat", "Lunch Break (2008)", "Slow, patient films and photographs made in close collaboration with communities of workers and children.");
+A("Stephen Shore", 1947, "USA", "a", "time place", "everyday consumer", "landscape street diary", "color largeformat snapshot", "Uncommon Places (1973-81)", "Made the ordinary American roadside, meals and motel rooms worth sustained attention in colour.");
+A("Rinko Kawauchi", 1972, "Japan", "a", "time spirit", "everyday nature family death", "diary stilllife", "color", "Illuminance (2011)", "Soft, luminous photographs of small moments that link the everyday to cycles of life and death.");
+
+// ---------- Memory ----------
+A("Christian Boltanski", 1944, "France", "b", "memory time spirit", "death history war", "archive conceptual", "installation appropriation bw", "Monument series (1980s)", "Builds shrine-like installations from blurred found portraits and lamps, evoking loss and the Holocaust.");
+A("Dinh Q. Lê", 1968, "Vietnam / USA", "b", "memory identity place", "war migration history media", "archive conceptual moving", "handworked collage appropriation installation video", "From Vietnam to Hollywood (2003-05)", "Wove strips of photographs together using grass-mat weaving, merging Hollywood, press and family images of the Vietnam War.");
+A("An-My Lê", 1960, "Vietnam / USA", "b", "memory place", "war migration history politics", "landscape documentary", "bw largeformat color", "Small Wars (1999-2002)", "Large format landscapes of war re-enactments and military training, where memory, theatre and reality blur.");
+A("Shimon Attie", 1957, "USA", "b", "memory place time", "history city war", "architecture conceptual", "installation night color", "The Writing on the Wall (1991-93)", "Projected pre-war photographs of Jewish street life onto the same Berlin buildings decades later.");
+A("Alfredo Jaar", 1956, "Chile / USA", "b", "memory language place", "politics war media", "conceptual documentary", "installation text", "The Rwanda Project (1994-2000)", "Questions whether photographs of suffering can be seen at all, often hiding or withholding the image.");
+A("Walid Raad", 1967, "Lebanon / USA", "b", "memory language", "war history politics", "archive conceptual", "collage text appropriation", "The Atlas Group (1989-2004)", "A partly fictional archive of the Lebanese civil wars that asks how history is written and trusted.");
+A("Zoe Leonard", 1961, "USA", "b", "memory place time", "city consumer queer", "documentary archive street", "color bw typology installation", "Analogue (1998-2009)", "Hundreds of photographs of vanishing shopfronts, tracing how goods and neighbourhoods change.");
+A("David Wojnarowicz", 1954, "USA", "b", "memory body identity language", "queer death politics", "conceptual staged", "bw collage text", "Arthur Rimbaud in New York (1978-79)", "Urgent, angry and tender photo-text works made during the AIDS crisis.");
+A("Fiona Tan", 1966, "Indonesia / Netherlands", "a", "memory identity time", "migration history family", "moving archive portrait", "video installation", "Vox Populi (2004-)", "Films and installations built from family albums and colonial archives, about how images shape belonging.");
+A("Binh Danh", 1977, "Vietnam / USA", "a", "memory science place spirit", "war history nature migration", "archive landscape portrait", "altprocess appropriation", "Immortality: The Remnants of the Vietnam and American War", "Prints war photographs directly into living leaves using sunlight and chlorophyll, and makes daguerreotypes of landscapes.");
+A("Pipo Nguyen-duy", 1962, "Vietnam / USA", "a", "memory place", "war history nature", "landscape staged portrait", "color largeformat", "East of Eden (2002-)", "Staged landscapes and portraits that return to Vietnam and the idea of a damaged paradise.");
+A("Nguyen Trinh Thi", 1973, "Vietnam", "a", "memory language place", "history politics media", "moving archive", "video appropriation installation", "Letters from Panduranga (2015)", "Hanoi-based filmmaker using found footage and essay film to look at overlooked histories in Vietnam.");
+A("The Propeller Group", 2006, "Vietnam / USA", "a", "memory spirit identity", "ritual media consumer death", "moving conceptual", "video installation", "The Living Need Light, the Dead Need Music (2014)", "Ho Chi Minh City collective mixing advertising language, film and ritual, including a lavish film on southern Vietnamese funerals.");
+A("Tuan Andrew Nguyen", 1976, "Vietnam / USA", "a", "memory spirit place", "war history migration ritual", "moving", "video installation", "The Unburied Sounds of a Troubled Horizon (2022)", "Films made with communities in Vietnam and beyond about inherited memory, war remnants and repair.");
+A("Thao Nguyen Phan", 1987, "Vietnam", "a", "memory place language", "history nature dreams", "moving", "video installation handworked", "Becoming Alluvium (2019)", "Poetic moving image works about the Mekong River, folklore and history.");
+A("Trinh T. Minh-ha", 1952, "Vietnam / USA", "a", "language identity memory", "gender migration history", "moving documentary", "video text", "Surname Viet Given Name Nam (1989)", "Filmmaker and theorist who questions who speaks for whom in documentary: 'speaking nearby' instead of speaking about.");
+A("Maika Elan", 1986, "Vietnam", "a", "identity place", "queer intimacy family everyday", "documentary portrait", "color", "The Pink Choice (2010-12)", "Warm, intimate documentary of same-sex couples at home in Vietnam; World Press Photo winner.");
+A("Dayanita Singh", 1961, "India", "a", "memory time", "family everyday history", "archive documentary", "bw installation typology", "Museum Bhavan (2017)", "Treats the photobook as an exhibition, building portable 'museums' whose sequences can be endlessly rearranged.");
+A("Sim Chi Yin", 1978, "Singapore", "a", "memory place", "war history family labor", "documentary landscape archive", "color video", "One Day We'll Understand (2015-)", "Uses family history to open up the hidden story of the anti-colonial war in Malaya.");
+A("Noh Suntag", 1971, "South Korea", "a", "memory place", "war politics history", "documentary", "bw color", "The strAnge ball (2004-07)", "Looks at how the division of Korea shapes everyday life, with dry humour and sharp framing.");
+A("Song Dong", 1966, "China", "b", "memory time spirit", "family everyday death", "conceptual", "performance video installation", "Touching My Father (1997-2011)", "Quiet performances for the camera about family, impermanence and things left unsaid.");
+A("RongRong", 1968, "China", "b", "memory body place", "city intimacy", "documentary self diary", "bw handworked", "East Village (1993-98)", "Recorded Beijing's experimental performance community and photographed the ruins of the changing city.");
+
+// ---------- Place ----------
+A("Andreas Gursky", 1955, "Germany", "b", "place science", "consumer labor city", "landscape architecture", "color largeformat composite aerial", "99 Cent (1999)", "Giant, digitally refined views of stock exchanges, supermarkets and factories: the patterns of global capitalism.");
+A("Thomas Struth", 1954, "Germany", "b", "place identity", "family city tech", "architecture portrait street", "color bw largeformat typology", "Museum Photographs (1989-)", "Empty streets, family portraits and visitors in museums, all observed with calm precision.");
+A("Bernd and Hilla Becher", 1931, "Germany", "b", "place time memory", "labor history", "architecture documentary", "bw largeformat typology", "Water Towers (1972-2009)", "Photographed disappearing industrial structures in identical flat light and showed them in grids to compare.");
+A("Candida Höfer", 1944, "Germany", "b", "place memory", "history", "architecture", "color largeformat typology", "Libraries (2005)", "Grand, empty public interiors such as libraries, theatres and museums, photographed with total symmetry.");
+A("Edward Burtynsky", 1955, "Canada", "b", "place science", "climate labor consumer", "landscape documentary", "color largeformat aerial", "Manufactured Landscapes", "Beautiful, disturbing large-scale views of mines, quarries, oil fields and factories.");
+A("Richard Misrach", 1949, "USA", "b", "place", "climate politics migration war", "landscape", "color largeformat", "Desert Cantos (1979-)", "A decades-long study of the American desert as a site of beauty, military testing and border politics.");
+A("Joel Sternfeld", 1944, "USA", "b", "place memory", "everyday history", "landscape documentary", "color largeformat text", "On This Site (1993-96)", "Ordinary-looking places where terrible things happened, paired with text that changes what you see.");
+A("Gregory Crewdson", 1962, "USA", "b", "place", "dreams family everyday", "staged", "color largeformat composite night", "Twilight (1998-2002)", "Film-scale productions that turn suburban America into unsettling, dreamlike stills.");
+A("Jeff Wall", 1946, "Canada", "b", "place language memory", "everyday city history", "staged conceptual", "color largeformat composite installation", "A Sudden Gust of Wind (after Hokusai) (1993)", "Builds elaborate 'cinematographic' pictures, shown as large lightboxes, that restage everyday incidents and art history.");
+A("James Casebere", 1953, "USA", "b", "place memory", "history dreams climate", "architecture staged", "color largeformat", "Flooded Hallway (1998-99)", "Builds tabletop models of prisons, tunnels and houses, then lights and photographs them as haunting empty spaces.");
+A("Thomas Demand", 1964, "Germany", "b", "place memory science", "media politics history", "architecture staged conceptual", "color largeformat appropriation", "Office (1995)", "Rebuilds scenes from news photographs life-size in paper, photographs them, then destroys the model.");
+A("Tina Barney", 1945, "USA", "b", "place identity", "family", "portrait staged documentary", "color largeformat", "Theater of Manners (1997)", "Large colour tableaux of her own wealthy family and friends at home, half posed and half candid.");
+A("Laurie Simmons", 1949, "USA", "b", "place identity", "gender consumer dreams", "staged stilllife", "color", "Early Color Interiors (1978-79)", "Photographs dolls and dollhouses to look at domestic roles and consumer dreams.");
+A("Sandy Skoglund", 1946, "USA", "b", "place", "dreams consumer nature", "staged", "color installation", "Radioactive Cats (1980)", "Builds whole surreal room sets in clashing colours, filled with sculpted animals, purely to be photographed.");
+A("Wang Qingsong", 1966, "China", "b", "place identity", "consumer city politics", "staged", "color largeformat appropriation", "Follow Me (2003)", "Huge staged satires of China's rapid consumer boom, cast with dozens of extras.");
+A("Yang Fudong", 1971, "China", "a", "place time", "youth city dreams", "moving staged", "bw video installation", "Seven Intellectuals in a Bamboo Forest (2003-07)", "Dreamy black and white films about a young generation adrift between tradition and the modern city.");
+A("Cao Fei", 1978, "China", "a", "place science identity", "youth labor tech city dreams", "moving staged", "video cgi color", "Whose Utopia (2006)", "Follows factory workers' fantasies and builds virtual cities to picture life in fast-changing China.");
+A("Alec Soth", 1969, "USA", "a", "place", "everyday intimacy", "portrait landscape documentary", "color largeformat", "Sleeping by the Mississippi (2004)", "Lyrical road-trip projects that link strangers, rooms and landscapes into a loose poem.");
+A("William Eggleston", 1939, "USA", "a", "place", "everyday consumer", "street stilllife diary", "color snapshot", "William Eggleston's Guide (1976)", "Proved that colour photographs of the most ordinary things could be art.");
+A("Daido Moriyama", 1938, "Japan", "a", "place memory", "city everyday", "street diary", "bw snapshot night", "Stray Dog, Misawa (1971)", "Grainy, blurry, high-contrast street photographs of Tokyo, shot on instinct.");
+A("Graciela Iturbide", 1942, "Mexico", "a", "place spirit identity", "ritual gender death", "documentary portrait", "bw", "Our Lady of the Iguanas (1979)", "Poetic black and white photographs of indigenous communities, ritual and daily life in Mexico.");
+A("LaToya Ruby Frazier", 1982, "USA", "a", "place identity body memory", "family labor race climate politics", "documentary portrait self", "bw text", "The Notion of Family (2001-14)", "Photographed three generations of her family in a declining steel town, linking health, race and industry.");
+A("Bae Bien-U", 1950, "South Korea", "a", "place spirit", "nature history", "landscape", "bw", "Sonamu (Pine Trees)", "Misty black and white pine forests, close to ink painting, treating the tree as a symbol of Korean spirit.");
+A("Yeondoo Jung", 1969, "South Korea", "a", "place identity", "dreams family youth everyday", "staged portrait moving", "color typology video", "Bewitched (2001-)", "Photographs people in their real jobs, then stages their dream life, shown side by side.");
+A("Gauri Gill", 1970, "India", "a", "place identity", "youth everyday ritual", "portrait documentary", "bw color handworked", "Notes from the Desert (1999-)", "Long-term collaborations with rural communities in Rajasthan, sometimes with drawings added by local artists.");
+A("Manit Sriwanichpoom", 1961, "Thailand", "a", "place identity", "consumer politics city", "staged street conceptual", "color performance typology", "Pink Man (1997-)", "A man in a pink suit with a pink shopping trolley wanders through Thailand as a satire of consumerism.");
+A("Martin Parr", 1952, "UK", "a", "place identity", "consumer everyday", "documentary street", "color snapshot", "The Last Resort (1983-85)", "Saturated, flash-lit, funny and uncomfortable pictures of leisure, tourism and taste.");
+A("Hoda Afshar", 1983, "Iran / Australia", "a", "place identity body", "migration politics", "portrait documentary moving", "bw video", "Remain (2018)", "Collaborative portraits with detained asylum seekers that let subjects shape their own image.");
+A("Newsha Tavakolian", 1981, "Iran", "a", "place identity", "gender politics youth war", "documentary portrait", "color", "Listen (2010)", "Moves between photojournalism and art to portray a generation of Iranians, including imagined album covers for banned women singers.");
+A("Sebastião Salgado", 1944, "Brazil", "a", "place body", "labor migration climate nature", "documentary landscape", "bw", "Workers (1993)", "Epic black and white documentary of manual labour, displacement and wilderness.");
+
+// ---------- Language ----------
+A("Barbara Kruger", 1945, "USA", "b", "language identity body", "gender consumer media politics", "conceptual archive", "text appropriation collage bw installation", "Untitled (Your body is a battleground) (1989)", "Found black and white photographs with bold red-banded slogans that speak back to advertising.");
+A("Sophie Calle", 1953, "France", "b", "language memory identity", "intimacy everyday death", "conceptual diary", "text bw color installation", "Take Care of Yourself (2007)", "Sets herself rules, such as following a stranger or working as a hotel maid, and reports the result in photographs and text.");
+A("Taryn Simon", 1975, "USA", "a", "language science memory", "politics tech history", "conceptual documentary", "text typology color largeformat", "An American Index of the Hidden and Unfamiliar (2007)", "Meticulously researched projects where photograph and caption depend on each other to reveal what is normally hidden.");
+A("Jim Goldberg", 1953, "USA", "a", "language identity place", "youth migration family", "documentary portrait", "text handworked bw collage", "Rich and Poor (1985)", "Asks the people he photographs to write on their own portraits.");
+A("Penelope Umbrico", 1957, "USA", "a", "language science time", "media tech consumer", "archive conceptual", "appropriation typology installation color", "Suns from Sunsets from Flickr (2006-)", "Collects thousands of near-identical online images and shows them as walls of collective habit.");
+
+// ---------- Science ----------
+A("Vik Muniz", 1961, "Brazil / USA", "b", "science memory language", "consumer media labor", "conceptual stilllife", "appropriation handworked color", "Pictures of Garbage (2008)", "Recreates famous images in chocolate, dust, sugar or rubbish and photographs the result.");
+A("Nancy Burson", 1948, "USA", "b", "science identity body", "tech race", "portrait conceptual", "composite cgi", "Human Race Machine (2000)", "A pioneer of computer morphing who made early composite faces questioning beauty, race and power.");
+A("Adam Fuss", 1961, "UK / USA", "b", "science spirit time", "nature death", "abstract stilllife", "cameraless altprocess", "Photograms (1988-)", "Life-size photograms of babies in water, snakes and smoke, plus daguerreotypes: photography without a camera.");
+A("Susan Derges", 1955, "UK", "b", "science place time", "nature", "abstract landscape", "cameraless night", "River Taw (1997-98)", "Submerges photographic paper in rivers at night and uses moonlight and flash to record the water directly.");
+A("Catherine Wagner", 1953, "USA", "b", "science place", "tech history", "stilllife architecture", "bw typology largeformat", "Art & Science: Investigating Matter (1995)", "Cool, precise photographs of laboratories, freezers and specimens: the places where knowledge is made.");
+A("Thomas Ruff", 1958, "Germany", "b", "science identity", "tech media", "portrait conceptual abstract", "appropriation color largeformat cgi typology", "Portraits (1986-91); jpegs (2004-)", "Tests what a photograph is, from passport-style giant portraits to enlarged internet JPEGs and 3D-generated photograms.");
+A("Joan Fontcuberta", 1955, "Spain", "a", "science language memory", "tech nature media", "conceptual archive", "appropriation cgi text bw", "Fauna (1987)", "Invents convincing fake archives, species and expeditions to test our trust in photographs.");
+A("Trevor Paglen", 1974, "USA", "a", "science place", "tech politics", "landscape conceptual", "longexposure cgi color night", "Limit Telephotography (2005-)", "Photographs secret bases, spy satellites and the hidden machinery of surveillance and AI.");
+A("Hito Steyerl", 1966, "Germany", "a", "science language", "tech media politics labor", "moving conceptual", "video cgi installation", "How Not to Be Seen (2013)", "Essay films and installations about how digital images circulate, watch us and shape power.");
+A("Richard Mosse", 1980, "Ireland", "a", "science place", "war migration climate tech", "documentary landscape moving", "color largeformat video installation", "Infra (2011); Incoming (2017)", "Uses military infrared film and heat-sensing cameras to make conflict and migration visible in unfamiliar ways.");
+A("Robert Zhao Renhui", 1983, "Singapore", "a", "science place", "nature climate city", "documentary conceptual archive", "color text installation typology", "A Guide to the Flora and Fauna of the World (2013)", "Mixes real and invented natural history to ask how humans picture and reshape nature.");
+A("Matthew Brandt", 1982, "USA", "a", "science place", "nature climate", "landscape abstract", "altprocess handworked color", "Lakes and Reservoirs (2011-)", "Soaks each landscape print in water from the lake it shows, letting the subject alter its own image.");
+A("Meghann Riepenhoff", 1979, "USA", "a", "science time place", "nature climate", "abstract landscape", "cameraless altprocess", "Littoral Drift (2013-)", "Cyanotypes made directly in waves, rain and ice, which keep changing after exposure.");
+A("Mandy Barker", null, "UK", "a", "science place", "climate consumer nature", "stilllife conceptual", "composite color typology", "SOUP (2011)", "Arranges plastic debris collected from oceans into beautiful, alarming images.");
+A("Chris Jordan", 1963, "USA", "a", "science", "consumer climate nature death", "conceptual documentary", "composite color", "Running the Numbers (2006-)", "Visualises the scale of mass consumption with images built from thousands of repeated objects.");
+A("Patricia Piccinini", 1965, "Australia", "a", "science body", "tech nature family", "staged conceptual", "cgi color installation", "Science Story series", "Imagines tender hybrid creatures to ask what care looks like in an age of biotechnology.");
+
+// ---------- Spirituality ----------
+A("Andres Serrano", 1950, "USA", "b", "spirit body", "ritual death politics", "portrait stilllife conceptual", "color largeformat", "The Morgue (1992)", "Lush, painterly colour photographs that bring religious imagery, bodily fluids and death into the same frame.");
+A("Mariko Mori", 1967, "Japan", "b", "spirit science identity", "tech dreams ritual", "self staged", "composite cgi color installation", "Pure Land (1996-98)", "Blends Buddhist imagery with futuristic fantasy in shimmering digital tableaux.");
+A("Kimsooja", 1957, "South Korea", "b", "spirit body place", "migration ritual city", "moving conceptual", "video performance installation", "A Needle Woman (1999-2001)", "Stands perfectly still with her back to the camera while crowds in world cities flow around her.");
+A("Pipilotti Rist", 1962, "Switzerland", "b", "body spirit", "gender dreams nature", "moving", "video installation color", "Ever Is Over All (1997)", "Immersive, saturated video environments that are sensual, funny and dreamlike.");
+A("Isaac Julien", 1960, "UK", "b", "identity memory place", "queer race migration history", "moving staged", "video installation color", "Ten Thousand Waves (2010)", "Lush multi-screen film installations that weave history, migration and desire.");
+A("Stan Douglas", 1960, "Canada", "b", "memory time place", "history media politics", "staged moving", "composite color video largeformat", "Midcentury Studio (2010-11)", "Meticulously restages overlooked historical moments in photographs and films.");
+A("Lieko Shiga", 1980, "Japan", "a", "spirit memory place", "dreams ritual death", "staged documentary", "color night handworked", "Rasen Kaigan (2008-12)", "Eerie, glowing images made while living in a coastal village before and after the 2011 tsunami.");
+A("Koo Bohnchang", 1953, "South Korea", "a", "spirit time memory", "history death", "stilllife", "bw color handworked typology", "Vessel (2004-)", "Quiet photographs of Joseon white porcelain and worn objects that hold the trace of time.");
+
+// ---------- On the class list (Robertson and McDaniel themes, Creative Photography Week 1) ----------
+A("Nobuyoshi Araki", 1940, "Japan", "", "body time", "intimacy death city everyday", "diary portrait stilllife", "bw color snapshot typology", "Sentimental Journey (1971)", "Obsessive diarist of Tokyo whose photobooks mix love, desire, flowers and grief; his work on sexuality is widely debated.", "raw dark");
+A("John Coplans", 1920, "UK / USA", "", "body time", "death", "self", "bw largeformat typology", "Self-Portraits (1984-2003)", "Began photographing his own ageing body in his sixties, always without the face, as if it were landscape or sculpture.", "cool raw");
+A("Felix Gonzalez-Torres", 1957, "Cuba / USA", "", "time memory body", "queer death intimacy politics", "conceptual", "installation bw", "Untitled (billboard of an empty bed) (1991)", "Placed a photograph of an empty, slept-in bed on city billboards as a public monument to private loss.", "tender quiet");
+A("Nicholas Nixon", 1947, "USA", "", "time body", "family death", "portrait", "bw largeformat typology", "The Brown Sisters (1975-)", "Photographed the same four sisters once a year, in the same order, for more than forty years.", "tender quiet");
+A("Jenny Holzer", 1950, "USA", "", "language", "politics media war", "conceptual", "text installation night", "Truisms (1977-79)", "Uses words as images: short statements on posters, LED signs and giant night projections on buildings.", "bold cool");
+A("Ed Ruscha", 1937, "USA", "", "language place", "city consumer everyday", "conceptual landscape", "bw typology text", "Twentysix Gasoline Stations (1963)", "Deadpan photobooks of gas stations, parking lots and every building on one street: the artist's book as artwork.", "cool playful");
+A("John Baldessari", 1931, "USA", "", "language", "media", "conceptual archive", "appropriation text collage", "Wrong (1967)", "Mixed found film stills, text and coloured dots over faces to joke about the rules of art and photography.", "playful bold");
+A("Glenn Ligon", 1960, "USA", "", "language identity", "race queer history", "conceptual", "text appropriation", "Notes on the Margin of the Black Book (1991-93)", "Text-based artist who also reframes existing photographs with quotations to ask who is looking at whom.", "cool");
+A("Willie Doherty", 1959, "Northern Ireland", "", "language place memory", "politics war history", "landscape conceptual moving", "text bw color video", "The Walls (1987)", "Landscapes of Derry overlaid with text, showing how one place is seen from two opposing sides.", "dark cool");
+A("Olafur Eliasson", 1967, "Denmark / Iceland", "", "science place", "nature climate", "landscape conceptual", "typology installation color", "Iceland photo series; The Weather Project (2003)", "Best known for light installations, he also makes grids of photographs recording Iceland's rivers, glaciers and horizons.", "quiet cool");
+A("Doug Aitken", 1968, "USA", "", "science place time", "migration tech city", "moving", "video installation", "Electric Earth (1999)", "Multi-screen video installations about people moving through restless, wired landscapes.", "cinematic dreamy");
+A("Wolfgang Tillmans", 1968, "Germany", "", "spirit body identity", "youth queer everyday politics", "diary portrait stilllife abstract", "color snapshot cameraless installation", "Freischwimmer (2003-)", "Moves freely between club portraits, windowsill still lifes and cameraless abstracts, taped and pinned to the wall.", "tender raw");
+A("James Turrell", 1943, "USA", "", "spirit science", "ritual nature", "conceptual", "installation", "Skyspaces; Roden Crater", "Works with light itself as the material. Not a photographer, but essential for thinking about how light shapes experience.", "quiet");
+
+// ---------- From course materials ----------
+A("Irving Penn", 1917, "USA", "", "body", "consumer", "stilllife fashion portrait food product", "studio bw color largeformat", "Still Life with Watermelon (1947)", "Brought the same elegant control to fashion, portraits, food and cigarette butts, usually against a plain studio backdrop.", "cool quiet");
+A("Ansel Adams", 1902, "USA", "", "place", "nature", "landscape", "bw largeformat", "Monolith, the Face of Half Dome (1927)", "The classic black and white landscape photographer of the American West, and co-inventor of the Zone System for exposure.", "quiet");
+A("Claudius Schulze", null, "Germany", "", "place science", "climate nature", "landscape documentary", "color largeformat aerial", "State of Nature", "Large format landscapes where sea walls, avalanche barriers and other human defences sit inside postcard-perfect views.", "cool quiet");
+A("Peter Bialobrzeski", 1961, "Germany", "", "place", "city", "landscape architecture", "color longexposure night largeformat", "Neon Tigers (2004)", "Photographs Asian megacities at dusk so that they glow like science fiction film sets.", "cinematic bold");
+A("Annie Leibovitz", 1949, "USA", "", "identity", "media", "portrait fashion photojournalism", "color studio", "John Lennon and Yoko Ono (1980)", "Magazine portraitist who builds a whole concept around each sitter.", "cinematic bold");
+A("W. Eugene Smith", 1918, "USA", "", "place body", "labor everyday", "documentary photojournalism", "bw", "Country Doctor (1948)", "Shaped the modern photo essay: long, immersive stories told across many pictures.", "raw tender");
+A("Robert Frank", 1924, "Switzerland / USA", "", "place identity", "everyday race politics", "documentary street", "bw snapshot", "The Americans (1958)", "Crossed the USA with a small camera and made a loose, grainy, critical portrait of a country.", "raw");
+A("Andre Kertesz", 1894, "Hungary / USA", "", "place time", "everyday city", "street stilllife", "bw", "Satiric Dancer (1926); Distortions (1933)", "A quiet poet of the small camera: geometry, shadows, and playful mirror distortions.", "quiet playful");
+A("Justin Mott", null, "USA / Vietnam", "", "place", "nature everyday", "documentary photojournalism lifestyle", "color", "Kindred Guardians", "Vietnam-based editorial and commercial photographer; his personal project follows people who devote their lives to animals.", "tender");
+A("Linh Pham", null, "Vietnam", "", "place", "everyday city youth", "documentary photojournalism", "color", "Portfolio at linh-pham.com", "Hanoi photographer and co-founder of Matca, the platform for Vietnamese photography; documentary stories from a changing Vietnam.", "raw tender");
+A("Ha Dao", null, "Vietnam", "", "identity body", "gender intimacy youth", "documentary portrait diary", "color", "Portfolio and writing at Matca", "Hanoi-based photographer who helps run Matca; her personal projects look at womanhood, intimacy and private life in Vietnam.", "tender");
+A("Binh Dang", null, "Vietnam", "", "place", "everyday", "documentary landscape street", "color", "Featured in Matca's Maket 02", "Vietnamese photographer making lyrical documentary pictures of ordinary places across the country.", "quiet");
+A("Wendy Red Star", 1981, "Apsaalooke (Crow) / USA", "", "identity place memory", "race history media", "self staged archive", "color appropriation handworked", "Four Seasons (2006)", "Poses in traditional dress among fake plastic scenery, and annotates historical portraits, to answer stereotypes of Native Americans with humour.", "playful bold");
+A("Sheila Metzner", 1939, "USA", "", "body", "dreams", "fashion stilllife portrait", "color altprocess", "Fresson print fashion work (1980s)", "Soft, grainy, painterly colour prints that made fashion and still life look like early art photography.", "dreamy quiet");
+A("Herb Ritts", 1952, "USA", "", "body", "media", "fashion portrait", "bw studio", "Fred with Tires (1984)", "Sculptural black and white bodies in hard California sunlight; a defining look of 1980s and 90s fashion.", "bold cool");
+A("Platon", 1968, "UK", "", "identity", "politics media", "portrait photojournalism", "studio bw color", "Power: portraits of world leaders (2009)", "Close, wide-angle, low-viewpoint portraits on a plain backdrop that make every sitter monumental.", "bold");
+A("Nick Knight", 1958, "UK", "", "body science", "tech dreams", "fashion", "color composite cgi studio", "SHOWstudio (founded 2000)", "Treats fashion photography as an experiment, pushing colour, digital manipulation, 3D scanning and film.", "bold dreamy");
+A("Steve McCurry", 1950, "USA", "", "place identity", "war everyday", "portrait documentary photojournalism", "color", "Afghan Girl (1984)", "Saturated colour reportage and portraits from South and Southeast Asia; also a useful case for debating ethics and editing.", "bold");
+A("Peta Clancy", null, "Bangerang / Australia", "", "place memory", "history nature", "landscape", "color handworked largeformat", "Undercurrent (2018-19)", "Cuts and layers prints back into the landscape and rephotographs them, marking hidden histories of Country.", "quiet dark");
+A("Harry Nankin", null, "Australia", "", "science place spirit", "nature climate", "abstract landscape", "cameraless night", "Shadowgrams of the natural world", "Makes cameraless images outdoors at night, letting moonlight, water and insects draw directly on film.", "quiet dark");
+A("Darren Sylvester", 1974, "Australia", "", "language identity", "consumer media youth", "staged", "color studio", "Staged photographs since the late 1990s", "Glossy, advertisement-like tableaux about pop culture, brands and loneliness.", "bold cinematic");
+A("Wim Wenders", 1945, "Germany", "", "place time", "everyday", "landscape", "color largeformat", "Written in the West (1987)", "The film director's still photographs: wide, empty places that feel like a film waiting to start.", "cinematic quiet");
+
+// ---------- Street and classic references ----------
+A("Henri Cartier-Bresson", 1908, "France", "", "time place", "everyday city", "street photojournalism", "bw", "Behind the Gare Saint-Lazare (1932)", "Named the 'decisive moment': geometry and gesture meeting in a single instant.", "quiet playful");
+A("Vivian Maier", 1926, "USA", "", "identity place", "everyday city", "street self", "bw", "Self-portraits in shop windows and mirrors", "A nanny whose huge street archive was discovered after her death; a master of reflections and shadow self-portraits.", "playful quiet");
+A("Fan Ho", 1931, "Hong Kong", "", "place time", "city everyday", "street", "bw", "Approaching Shadow (1954)", "Turned 1950s Hong Kong alleys into theatre with shafts of light, smoke and long shadows.", "cinematic quiet");
+A("Saul Leiter", 1923, "USA", "", "place", "city everyday", "street abstract", "color", "Early Color (1948-60)", "Painterly colour street pictures shot through steamed windows, rain and reflections.", "quiet dreamy");
+A("Lee Friedlander", 1934, "USA", "", "identity place", "everyday city", "street self", "bw", "Self Portrait (1970)", "Witty, crowded frames where his own shadow or reflection keeps sneaking into the picture.", "playful cool");
+
+// ---------- Recent prize winners and shortlists ----------
+A("Rene Matic", 1997, "UK", "", "identity body", "queer race family intimacy", "diary portrait", "snapshot color installation", "AS OPPOSED TO THE TRUTH (2024-25)", "Tender, diaristic snapshots of friends, family and community that ask what it means to be Black, queer and British.", "tender raw");
+A("Weronika Gesicka", 1984, "Poland", "", "memory science language", "family media tech", "archive conceptual", "appropriation composite cgi", "Traces (2015-17)", "Digitally bends vintage stock photos of perfect families into funny, unsettling scenes; recent work plays with fake facts and AI.", "playful dark");
+A("Amak Mahmoodian", 1980, "Iran / UK", "", "memory identity", "migration dreams history", "portrait archive conceptual", "bw text handworked", "Shenasnameh (2016)", "Poetic projects on exile and identity, from Iranian women's ID photos to the dreams of people living far from home.", "tender dreamy");
+A("Jane Evelyn Atwood", 1947, "USA / France", "", "body place", "gender politics labor", "documentary photojournalism", "bw", "Too Much Time: Women in Prison (2000)", "Spends years inside closed worlds, such as women's prisons, to document lives most people never see.", "raw");
+A("Sophie Ristelhueber", 1949, "France", "", "place memory body", "war history", "landscape conceptual", "aerial color bw installation", "Fait (1992)", "Photographs the scars that war leaves on land and bodies, like trenches seen from the air after the Gulf War.", "dark cool");
+A("Lebohang Kganye", 1990, "South Africa", "", "memory identity", "family history", "self staged archive", "composite collage installation", "Ke Lefa Laka: Her-story (2013)", "Dresses in her late mother's clothes and inserts herself into old family photos; also builds cut-out photo dioramas.", "tender dreamy");
+A("Ingrid Pollard", 1953, "Guyana / UK", "", "place identity language", "race history nature", "landscape portrait", "text handworked altprocess", "Pastoral Interlude (1987-88)", "Hand-tinted pictures of Black figures in the English countryside, with captions about who is allowed to belong there.", "quiet cool");
+A("Mohamed Bourouissa", 1978, "Algeria / France", "", "place identity", "youth city politics race", "staged documentary", "color", "Peripherique (2005-08)", "Carefully staged scenes with friends in the Paris suburbs that look like news photos but are composed like paintings.", "cinematic raw");
+A("Joana Choumali", 1974, "Cote d'Ivoire", "", "memory spirit place", "death everyday city", "street documentary", "handworked color", "Ca va aller (2016-19)", "Embroiders directly onto small phone photographs as a slow way of working through collective grief.", "tender dreamy");
+A("Citlali Fabian", null, "Mexico", "", "identity memory place", "family migration history ritual", "portrait documentary", "bw color", "Bilha, Stories of My Sisters", "Yalalteca photographer whose portraits of her own community explore Indigenous identity, family and belonging.", "tender");
+A("Alejandro Cegarra", 1989, "Venezuela / Mexico", "", "place body", "migration politics", "documentary photojournalism", "bw", "The Two Walls (2018-)", "Black and white long-term documentary on migrants and asylum seekers crossing Mexico.", "raw dark");
+A("Samar Abu Elouf", null, "Palestine", "", "body place", "war family", "photojournalism portrait", "color", "World Press Photo of the Year 2025", "Photojournalist from Gaza whose portraits of wounded civilians show the human cost of war with great dignity.", "raw tender");
+A("Susan Meiselas", 1948, "USA", "", "place body memory", "war gender labor history", "documentary photojournalism archive", "color bw", "Carnival Strippers (1976)", "Magnum photographer who stays with her subjects for years and gives them a voice alongside the pictures.", "raw");
+A("Laia Abril", 1986, "Spain", "", "body language science", "gender politics history", "conceptual documentary archive", "text installation typology", "On Abortion (2018)", "Research-heavy visual histories of misogyny that combine photographs, objects, documents and testimony.", "dark cool");
+A("Max Pinckers", 1988, "Belgium", "", "language place", "media politics", "documentary staged", "color studio", "Margins of Excess (2018)", "Lights and stages real people and situations like film stills, to question what 'documentary' means.", "cinematic cool");
+A("Cristina de Middel", 1975, "Spain", "", "language memory science", "history dreams media", "staged documentary", "color", "The Afronauts (2012)", "Mixes fact and fiction, as in her playful reimagining of Zambia's forgotten 1960s space programme.", "playful dreamy");
+A("Diana Markosian", 1989, "Russia / USA", "", "memory identity place", "family migration", "staged documentary moving", "color video", "Santa Barbara (2020)", "Hired actors to restage her own family's migration from Russia to America, like a soap opera.", "cinematic tender");
+A("Sohrab Hura", 1981, "India", "", "memory place body", "family politics dreams", "diary documentary moving", "color snapshot bw video", "The Coast (2019)", "Feverish, flash-lit sequences that blur diary, documentary and nightmare.", "raw dreamy");
+A("Rahim Fortune", 1994, "USA", "", "place identity memory", "race family history ritual", "portrait documentary landscape", "bw largeformat", "Hardtack (2024)", "Black and white portraits and landscapes of Black life and tradition in the American South.", "tender quiet");
+A("Farah Al Qasimi", 1991, "UAE / USA", "", "identity place", "gender consumer media", "staged stilllife portrait", "color snapshot installation", "Photographs of Gulf interiors", "Saturated, pattern-filled pictures of homes, malls and hidden faces in the Persian Gulf.", "bold playful");
+A("Pieter Hugo", 1976, "South Africa", "", "identity place body", "race labor politics", "portrait documentary", "color largeformat", "The Hyena and Other Men (2005-07)", "Direct, confrontational large format portraits made across Africa.", "raw cool");
+A("Gohar Dashti", 1980, "Iran", "", "memory place", "war family nature", "staged", "color largeformat", "Today's Life and War (2008)", "Stages calm domestic scenes, such as a couple eating breakfast, in the middle of a battlefield.", "cinematic dreamy");
+A("Vasantha Yogananthan", 1985, "France", "", "spirit language place", "ritual history dreams", "documentary staged", "color handworked largeformat", "A Myth of Two Souls (2013-21)", "Retraced the Ramayana across India, mixing documentary, staged scenes and hand-painted prints.", "dreamy tender");
+A("Daisuke Yokota", 1983, "Japan", "", "time memory science", "dreams", "abstract", "bw multiexp altprocess handworked", "Back Yard (2012)", "Rephotographs, reprints and chemically attacks his images until they dissolve into grain and ghostly layers.", "dark dreamy");
+A("Boris Eldagsen", 1970, "Germany", "", "science memory", "tech media dreams", "conceptual portrait", "cgi", "Pseudomnesia: The Electrician (2022)", "Won a Sony World Photography Awards category in 2023 with an AI-generated image, then refused the prize to start a debate.", "dark playful");
+A("John Stezaker", 1949, "UK", "", "identity language memory", "media", "archive conceptual portrait", "collage appropriation", "Marriage series", "Slices and joins old film stills and postcards into uncanny new faces with a single cut.", "playful dark");
+A("Juergen Teller", 1964, "Germany", "", "body identity", "media consumer", "fashion portrait", "snapshot color", "Fashion campaigns since the 1990s", "Harsh flash, no retouching, awkward poses: made 'bad' pictures a luxury fashion language.", "raw playful");
+
+// ---------- Fashion and editorial ----------
+A("Tim Walker", 1970, "UK", "", "body", "dreams", "fashion staged portrait", "color studio", "Story Teller (2012)", "Builds fairy-tale sets with giant props for fantastical fashion stories.", "dreamy playful");
+A("Guy Bourdin", 1928, "France", "", "body language", "consumer dreams gender", "fashion product staged", "color studio", "Charles Jourdan shoe campaigns (1967-81)", "Saturated, mysterious mini-narratives where the product is almost a clue in a crime scene.", "bold cinematic");
+A("Richard Avedon", 1923, "USA", "", "identity body", "media labor", "fashion portrait", "bw studio largeformat", "In the American West (1985)", "Stark portraits against white, and fashion pictures full of movement.", "cool bold");
+A("Tyler Mitchell", 1995, "USA", "", "identity body", "race youth dreams", "fashion portrait", "color", "I Can Make You Feel Good (2020)", "Sunlit, relaxed images of Black youth at leisure, moving between Vogue covers and museum walls.", "tender dreamy");
+A("Campbell Addy", 1993, "UK", "", "identity body", "race queer", "fashion portrait", "color studio", "Feeling Seen (2022)", "Rich, sculptural fashion portraits that centre Black and queer beauty.", "bold tender");
+A("Nadine Ijewere", 1992, "UK", "", "identity", "race gender", "fashion portrait", "color", "Our Own Selves (2021)", "Colourful, joyful fashion work celebrating varied beauty and her Nigerian-Jamaican heritage.", "bold tender");
+A("Harley Weir", 1988, "UK", "", "body", "intimacy gender", "fashion portrait", "color altprocess", "Fashion editorials and personal books", "Close, sensual colour and unexpected crops; also experiments with darkroom chemistry.", "tender raw");
+A("Zhong Lin", null, "Malaysia / Taiwan", "", "body", "dreams", "fashion portrait", "color studio", "Project 365", "Vivid, surreal beauty and fashion images with intense colour and striking styling.", "bold dreamy");
+A("Leslie Zhang", null, "China", "", "identity memory", "youth history", "fashion portrait", "color", "Editorials for Chinese fashion magazines", "Fashion stories soaked in nostalgic colour, drawing on Chinese visual culture.", "dreamy bold");
+A("Luo Yang", 1984, "China", "", "identity body", "gender youth", "portrait documentary", "color", "Girls (2007-)", "Long-running portraits of young women in China: confident, vulnerable, individual.", "tender raw");
+A("Mous Lamrabat", 1983, "Morocco / Belgium", "", "identity language", "consumer ritual media", "fashion staged portrait", "color", "Mousganistan", "Playful mash-ups of Moroccan dress with global brand logos, shot under bright desert skies.", "playful bold");
+A("Petra Collins", 1992, "Canada", "", "identity body", "youth gender dreams", "fashion portrait", "color night", "Coming of Age (2017)", "Hazy, pastel, neon-lit pictures of girlhood that shaped the look of 2010s youth culture.", "dreamy tender");
+A("Erwin Olaf", 1959, "Netherlands", "", "identity body", "dreams history", "staged portrait fashion", "color studio composite", "Grief (2007)", "Immaculate, perfectly lit studio tableaux where something emotional is always slightly wrong.", "cinematic cool");
+A("Ryan McGinley", 1977, "USA", "", "body place", "youth nature", "lifestyle portrait fashion", "color snapshot", "I Know Where the Summer Goes (2008)", "Road trips with friends running through fields, caves and fireworks: freedom as a visual style.", "dreamy raw");
+A("Chen Man", 1980, "China", "", "identity body", "media consumer", "fashion portrait", "color composite studio", "Covers for Vision magazine (2003-07)", "Hyper-polished, heavily post-produced fashion and beauty imagery.", "bold");
+A("Nhu Xuan Hua", 1989, "France / Vietnam", "", "memory identity", "family migration", "fashion archive staged", "composite color", "Tropism: Consequences of a Displaced Memory", "Fashion photographer who digitally melts her family's archive photos to picture memory fading across generations.", "dreamy tender");
+
+// ---------- Food, product, interiors, commercial portrait ----------
+A("Laura Letinsky", 1962, "Canada / USA", "", "time", "everyday consumer", "stilllife food", "color largeformat", "Hardly More Than Ever (1997-2004)", "Pale still lifes of tables after the meal: crumbs, peel and stains as beautiful leftovers.", "quiet tender");
+A("Carl Kleiner", null, "Sweden", "", "language", "consumer", "stilllife food product", "color studio typology", "Homemade Is Best (2010)", "Arranges ingredients and objects into neat, graphic grids seen from above.", "playful cool");
+A("Toiletpaper (Cattelan and Ferrari)", 2010, "Italy", "", "language", "consumer media dreams", "stilllife product staged", "color studio", "Toiletpaper magazine", "A magazine of glossy, absurd, pop-coloured images that look like adverts for nothing.", "playful bold");
+A("Bobby Doherty", null, "USA", "", "", "consumer everyday", "stilllife food product", "color studio", "Still lifes for New York magazine", "Hard light and candy colours that make everyday objects and food pop.", "bold playful");
+A("Darina Kopcok", null, "Canada", "", "", "consumer", "food stilllife", "color studio", "Portfolio at darinakopcok.com", "Food photographer and educator with a dark, moody, painterly style.", "dark quiet");
+A("Christina Peters", null, "USA", "", "", "consumer", "food product", "color studio", "Portfolio at christinapeters.com", "Commercial food photographer with a clean, bright advertising look.", "bold");
+A("James Ransom", null, "USA", "", "", "consumer everyday", "food stilllife lifestyle", "color", "Portfolio at james-ransom.com", "Natural-light food and kitchen photography with an editorial feel.", "quiet tender");
+A("Lee Starnes", null, "Vietnam", "", "place", "consumer everyday", "food portrait lifestyle", "color", "Portfolio at leestarnesphoto.com", "Food, portrait and lifestyle photographer listed in your Commercial Photography course resources.", "bold");
+A("Dan Winters", 1962, "USA", "", "identity", "media tech", "portrait photojournalism stilllife", "color studio", "Road to Seeing (2014)", "Instantly recognisable magazine portraits: muted colour, built sets and precise directional light.", "cool cinematic");
+A("Iwan Baan", 1975, "Netherlands", "", "place", "city everyday", "architecture documentary", "color aerial", "The City and the Storm (2012)", "Photographs buildings with people and city life in them, often from a helicopter.", "bold");
+A("Julius Shulman", 1910, "USA", "", "place", "everyday dreams", "architecture lifestyle", "bw color largeformat", "Case Study House No. 22 (1960)", "Made modern houses desirable by staging people and furniture inside them.", "cool cinematic");
+A("Helene Binet", 1959, "Switzerland / UK", "", "place time", "history", "architecture abstract", "bw largeformat", "Photographs of buildings by Zumthor, Hadid and Le Corbusier", "Black and white film studies of how light and shadow move across architecture.", "quiet cool");
+
+// ---------- Creative techniques: glitch, light, layering, cut and stitch ----------
+A("Rosa Menkman", 1983, "Netherlands", "", "science language", "tech media", "abstract conceptual", "glitch cgi", "A Vernacular of File Formats (2010)", "Artist and theorist of glitch who breaks image files on purpose to show how digital images are built.", "bold cool");
+A("Sabato Visconti", null, "Brazil / USA", "", "science", "tech dreams", "abstract portrait landscape", "glitch color", "Glitch photography series", "Corrupts camera memory and image data so photographs smear into colour bands and blocks.", "bold dreamy");
+A("Gjon Mili", 1904, "Albania / USA", "", "time science", "media", "portrait conceptual", "lightpaint longexposure bw studio", "Picasso draws a centaur in the air (1949)", "Used strobe and long exposure to draw with light and freeze movement in a single frame.", "playful");
+A("Tokihiro Sato", 1957, "Japan", "", "time place spirit", "nature city", "landscape", "lightpaint longexposure bw largeformat", "Photo-Respiration (1988-)", "Walks through hours-long exposures with a mirror or torch, leaving constellations of light but no body.", "quiet dreamy");
+A("Eric Staller", null, "USA", "", "time place", "city", "street conceptual", "lightpaint longexposure night color", "Light Drawings (1976-80)", "Drew glowing shapes through New York streets at night with sparklers and lights.", "playful bold");
+A("Christoffer Relander", null, "Finland", "", "identity place", "nature dreams", "portrait landscape", "multiexp bw", "We Are Nature (2010-)", "In-camera double exposures that merge faces with trees and birds.", "dreamy quiet");
+A("Stephanie Jung", null, "Germany", "", "time place", "city", "street abstract", "multiexp color", "Multiple exposure cityscapes", "Layers many frames of the same street so the city vibrates like a memory.", "dreamy bold");
+A("Alma Haser", 1989, "Germany / UK", "", "identity", "dreams family", "portrait conceptual", "handworked collage color", "Cosmic Surgery (2013)", "Folds prints of the sitter's face into origami and places them back onto the portrait.", "playful dreamy");
+A("Maurizio Anzeri", 1969, "Italy / UK", "", "identity memory", "dreams history", "archive portrait", "handworked appropriation", "Embroidered photo-sculptures", "Stitches geometric masks of thread over found vintage portraits.", "playful dark");
+A("Julie Cockburn", 1966, "UK", "", "identity memory", "dreams history", "archive portrait", "handworked collage appropriation", "Embroidered found photographs", "Adds bright embroidery, beads and cut shapes to old studio portraits and landscapes.", "playful tender");
+A("Kensuke Koike", 1980, "Japan / Italy", "", "identity memory", "dreams", "archive conceptual", "collage handworked appropriation", "Single Image Processing", "Cuts one vintage photo and rearranges every piece, adding and removing nothing.", "playful cool");
+A("Kanghee Kim", 1991, "South Korea / USA", "", "place", "everyday dreams city", "street conceptual", "composite color", "Street Errands (2016-)", "Photoshops small magic into everyday scenes: skies folded into cakes and windows.", "playful dreamy");
+A("Yoshinori Mizutani", 1987, "Japan", "", "place science", "city nature", "street abstract", "color snapshot", "Tokyo Parrots (2013)", "Hard flash and bright colour turn Tokyo's wild parakeets into pop graphics.", "bold playful");
+A("Feng Li", 1971, "China", "", "place", "city everyday", "street", "color snapshot night", "White Night", "Flash-lit street photography of the strange and funny moments in Chinese city life.", "playful raw");
+A("Lin Zhipeng (No.223)", 1979, "China", "", "body identity", "youth intimacy queer", "diary portrait", "snapshot color", "Diary photographs since the mid 2000s", "A colourful, carefree photo diary of friends and youth culture in China.", "playful tender");
+A("Chen Wei", 1980, "China", "", "place memory", "youth city dreams", "staged stilllife", "color night studio", "In the Waves (2013)", "Builds and lights studio sets of nightclubs and abandoned rooms that feel like half-remembered dreams.", "cinematic dreamy");
+A("Wawi Navarroza", 1979, "Philippines", "", "identity place", "gender history dreams", "self staged stilllife", "color studio", "Self-portrait tableaux", "Lush, layered self-portraits packed with fabrics, fruit and objects from the tropics.", "bold dreamy");
+
+// ---------- Class list, course references, awards, links ----------
+ROBERTSON("Cindy Sherman|Nikki S. Lee|Shirin Neshat|Zanele Muholi|Carrie Mae Weems|Yasumasa Morimura|Lorna Simpson|Catherine Opie|Robert Mapplethorpe|Sally Mann|Nan Goldin|Francesca Woodman|Andres Serrano|Nobuyoshi Araki|John Coplans|Hannah Wilke|Hiroshi Sugimoto|Christian Boltanski|Sophie Calle|Felix Gonzalez-Torres|Nicholas Nixon|Dayanita Singh|Tacita Dean|Zoe Leonard|Andreas Gursky|Jeff Wall|Edward Burtynsky|Thomas Struth|Sebastião Salgado|Richard Misrach|Candida Höfer|Thomas Demand|Barbara Kruger|Jenny Holzer|Ed Ruscha|John Baldessari|Glenn Ligon|Willie Doherty|Thomas Ruff|Trevor Paglen|Nancy Burson|Olafur Eliasson|Doug Aitken|Pipilotti Rist|Hito Steyerl|Bill Viola|Wolfgang Tillmans|James Turrell|Ana Mendieta");
+T("Sophie Calle", "time"); T("Sally Mann", "spirit"); T("Pipilotti Rist", "science"); T("Hiroshi Sugimoto", "place");
+C("Photo 101", "Irving Penn|Ansel Adams|Claudius Schulze|Peter Bialobrzeski|Annie Leibovitz|Jeff Wall|W. Eugene Smith|Justin Mott|Maika Elan|Linh Pham");
+C("Creative Photography", "Robert Frank|Andre Kertesz|Gjon Mili");
+C("Commercial Photography", "Darina Kopcok|Christina Peters|James Ransom|Lee Starnes|Justin Mott");
+
+W("Rene Matic", "Deutsche Börse Prize 2026 winner");
+W("Weronika Gesicka", "Deutsche Börse Prize 2026 shortlist");
+W("Amak Mahmoodian", "Deutsche Börse Prize 2026 shortlist");
+W("Jane Evelyn Atwood", "Deutsche Börse Prize 2026 shortlist");
+W("Zanele Muholi", "Hasselblad Award 2026");
+W("Sophie Ristelhueber", "Hasselblad Award 2025");
+W("Ingrid Pollard", "Hasselblad Award 2024");
+W("Carrie Mae Weems", "Hasselblad Award 2023");
+W("Dayanita Singh", "Hasselblad Award 2022");
+W("Alfredo Jaar", "Prix Pictet 2025");
+W("Gauri Gill", "Prix Pictet 2023");
+W("Sally Mann", "Prix Pictet 2021");
+W("Joana Choumali", "Prix Pictet 2019");
+W("Richard Mosse", "Prix Pictet 2017");
+W("Lebohang Kganye", "Deutsche Börse Prize 2024");
+W("Samuel Fosso", "Deutsche Börse Prize 2023");
+W("Deana Lawson", "Deutsche Börse Prize 2022");
+W("Cao Fei", "Deutsche Börse Prize 2021");
+W("Mohamed Bourouissa", "Deutsche Börse Prize 2020");
+W("Susan Meiselas", "Deutsche Börse Prize 2019");
+W("Trevor Paglen", "Deutsche Börse Prize 2016");
+W("Citlali Fabian", "Sony World Photography Awards 2026, Photographer of the Year");
+W("Alejandro Cegarra", "Leica Oskar Barnack Award 2025");
+W("Samar Abu Elouf", "World Press Photo of the Year 2025");
+W("Maika Elan", "World Press Photo 2013, first prize");
+W("Boris Eldagsen", "Declined a Sony World Photography Award, 2023");
+
+U("Maika Elan", "https://maikaelan.com/"); U("Justin Mott", "https://www.justinmott.com/"); U("Linh Pham", "https://linh-pham.com/");
+U("Peter Bialobrzeski", "https://www.bialobrzeski.net/neontigers");
+U("Claudius Schulze", "https://www.lensculture.com/articles/claudius-schulze-state-of-nature");
+U("Darina Kopcok", "https://www.darinakopcok.com/"); U("Christina Peters", "https://www.christinapeters.com/");
+U("James Ransom", "https://www.james-ransom.com/portfolio"); U("Lee Starnes", "https://www.leestarnesphoto.com/");
+U("Ha Dao|Binh Dang", "https://matca.vn/en/");
+
+// ---------- Moods for the first set of artists ----------
+M("quiet", "Hiroshi Sugimoto|Uta Barth|Rinko Kawauchi|Bae Bien-U|Koo Bohnchang|Tacita Dean|Susan Derges|Candida Höfer|Stephen Shore|Ishiuchi Miyako|Kimsooja|Sharon Lockhart|Vera Lutter|Abelardo Morell|Atta Kim|Dayanita Singh|Meghann Riepenhoff|Adam Fuss|Song Dong|Chris McCaw|Michael Wesely|Alec Soth|Bill Viola|Thao Nguyen Phan|Zoe Leonard|Joel Sternfeld|Gauri Gill");
+M("bold", "Barbara Kruger|Wang Qingsong|Martin Parr|Sandy Skoglund|Viviane Sassen|Manit Sriwanichpoom|Hank Willis Thomas|Renée Cox|Pipilotti Rist|Mariko Mori|Liu Bolin|Cao Fei|William Eggleston|Andreas Gursky|Samuel Fosso|Zanele Muholi|Lalla Essaydi|Vik Muniz|Ren Hang|Mandy Barker|Chris Jordan");
+M("dark", "Christian Boltanski|Andres Serrano|Sally Mann|Francesca Woodman|James Casebere|Daido Moriyama|David Wojnarowicz|Lieko Shiga|Trevor Paglen|Richard Mosse|Shimon Attie|Alfredo Jaar|Zhang Huan|Walid Raad|Noh Suntag|Robert Mapplethorpe|Edward Burtynsky|Hannah Wilke");
+M("dreamy", "Gregory Crewdson|Yang Fudong|Duane Michals|Tracey Moffatt|Lieko Shiga|Mariko Mori|Pipilotti Rist|Francesca Woodman|Rinko Kawauchi|Sandy Skoglund|Laurie Simmons|Yeondoo Jung|Patricia Piccinini|Ana Mendieta|Thao Nguyen Phan|Viviane Sassen|Ahn Jun|Pipo Nguyen-duy");
+M("raw", "Nan Goldin|Daido Moriyama|Ren Hang|LaToya Ruby Frazier|RongRong|David Wojnarowicz|Jim Goldberg|Sebastião Salgado|Hoda Afshar|Newsha Tavakolian|Lyle Ashton Harris|Zhang Huan|Hannah Wilke|Sim Chi Yin|Graciela Iturbide|An-My Lê");
+M("playful", "Nikki S. Lee|Tomoko Sawada|Pixy Liao|Yasumasa Morimura|Martin Parr|Manit Sriwanichpoom|Joan Fontcuberta|Vik Muniz|Shadi Ghadirian|Penelope Umbrico|Laurie Simmons|Pushpamala N.|Gillian Wearing|Liu Bolin|Robert Zhao Renhui|Christian Marclay|Cindy Sherman|Samuel Fosso|Mari Katayama|Wang Qingsong");
+M("cinematic", "Gregory Crewdson|Jeff Wall|Cindy Sherman|Stan Douglas|Isaac Julien|Tracey Moffatt|Yang Fudong|Shirin Neshat|Tina Barney|Deana Lawson|Carrie Mae Weems|Tuan Andrew Nguyen|The Propeller Group|Nguyen Trinh Thi|Fiona Tan|Trinh T. Minh-ha|Thomas Demand");
+M("tender", "Maika Elan|Nan Goldin|Rinko Kawauchi|Ishiuchi Miyako|Dawoud Bey|Alec Soth|Sally Mann|Deana Lawson|Rineke Dijkstra|Catherine Opie|Sophie Calle|Song Dong|Binh Danh|Dinh Q. Lê|Gauri Gill|Sunil Gupta|Pixy Liao|Oh Heinkuhn|Carrie Mae Weems|Lorna Simpson|Mari Katayama|Fiona Tan|Sharon Lockhart");
+M("cool", "Bernd and Hilla Becher|Thomas Struth|Thomas Ruff|Andreas Gursky|Candida Höfer|Thomas Demand|Taryn Simon|Catherine Wagner|Edward Burtynsky|Richard Misrach|Idris Khan|Hito Steyerl|Nancy Burson|Lorna Simpson|Walid Raad|Rineke Dijkstra|Zoe Leonard|Matthew Brandt|Oh Heinkuhn|Catherine Opie|Trevor Paglen|Michael Wesely|Atta Kim|Vera Lutter");
+
+// ---------- Extra technique tags ----------
+const TQ = (tech, names) => each(names, a => { if (!a.techniques.includes(tech)) a.techniques.push(tech); });
+TQ("multiexp", "Idris Khan|Atta Kim|Francesca Woodman|Duane Michals|Lebohang Kganye");
+TQ("glitch", "Thomas Ruff|Hito Steyerl|Penelope Umbrico|Nhu Xuan Hua");
+TQ("lightpaint", "Susan Derges|Adam Fuss|Gregory Crewdson|Chen Wei");
+TQ("studio", "Robert Mapplethorpe|Cindy Sherman|Sandy Skoglund|Laurie Simmons|Andres Serrano|Thomas Demand|James Casebere|Vik Muniz|Mandy Barker");
