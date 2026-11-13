@@ -134,13 +134,19 @@ nav button b{color:var(--grease);font-weight:500}
 #toast.on{opacity:1}
 .tools{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 26px}
 
+.foot{border-top:1px solid var(--line);padding-bottom:40px;text-align:center}
+.foot .wrap{padding-top:26px}
+.foot .school{font-family:var(--disp);text-transform:uppercase;font-size:22px;letter-spacing:.03em}
+.foot .university{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--edge);margin-top:4px}
+.foot .copyright{font-family:var(--mono);font-size:12.5px;color:#cfcabd;margin-top:14px}
+.foot .disclaimer{color:var(--dim);font-size:13px;max-width:70ch;margin:14px auto 0}
 @media (max-width:860px){
   .layout{grid-template-columns:1fr}
   .side{position:static;max-height:none}
   .layout > .side{order:2;margin-top:30px}
 }
 @media print{
-  header.top,.side,.acts,.tools,#toast,.sprockets{display:none!important}
+  header.top,.side,.acts,.tools,#toast,.sprockets,.foot{display:none!important}
   body{background:#fff;color:#000}.card{box-shadow:0 0 0 1px #000;break-inside:avoid}.card.picked::after{display:none}
   .head h2{color:#000}
 }
@@ -222,6 +228,15 @@ nav button b{color:var(--grease);font-weight:500}
     <div class="sheet" id="pickCards"></div>
   </section>
 </main>
+<footer class="foot">
+  <div class="sprockets dim"></div>
+  <div class="wrap">
+    <div class="school">School of Communication &amp; Design</div>
+    <div class="university">RMIT University Vietnam</div>
+    <div class="copyright">&copy; 2026 Bin Youn &middot; <a href="https://binyoun.com" target="_blank" rel="noopener">binyoun.com</a> &middot; <a href="mailto:bin.youn@rmit.edu.vn">bin.youn@rmit.edu.vn</a></div>
+    <p class="disclaimer">An independent teaching resource made by Bin Youn for photography students. This is not an official RMIT University website. Canvas and the course guide are the official record: if anything here differs, Canvas is correct.</p>
+  </div>
+</footer>
 <div id="flash"></div>
 <div id="toast" role="status"></div>
 
