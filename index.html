@@ -134,6 +134,33 @@ nav button b{color:var(--grease);font-weight:500}
 #toast.on{opacity:1}
 .tools{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 26px}
 
+/* library */
+.badge.l{background:#c9d6e8;border-color:#7d93b3;color:#1d2c44}
+.slip{border-top:1px dashed #b9b3a2;padding-top:8px;font-size:13px;color:#3d3a33}
+.slip .h{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#2f5ea8;margin-bottom:3px}
+.slip a{color:inherit;text-decoration:none;border-bottom:1px solid #b9b3a2}
+.slip .cn{font-family:var(--mono);font-size:11.5px;background:#e3dccb;padding:0 4px;border-radius:2px;white-space:nowrap}
+.shelfhead{margin:44px 0 6px;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.shelfhead h3{font-family:var(--disp);font-weight:400;text-transform:uppercase;font-size:30px;margin:0}
+.shelfnote{font-family:var(--hand);font-size:22px;color:var(--grease);margin:0 0 16px}
+.bshelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px 14px}
+.bcard{position:relative;background:#f4ecd8;color:var(--ink);border-radius:2px;padding:12px 14px 12px;display:flex;flex-direction:column;gap:6px;
+  background-image:linear-gradient(#e2554a,#e2554a),repeating-linear-gradient(transparent 0 25px,#cfdbea 25px 26px);
+  background-size:100% 2px,100% 100%;background-repeat:no-repeat,repeat;background-position:0 34px,0 36px;box-shadow:0 2px 0 #0006}
+.bcard .top{display:flex;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;min-height:24px}
+.bcard .cn{color:#b4271c;font-weight:500;font-size:12.5px;letter-spacing:.02em}
+.bcard .kind{color:#55524a}
+.bcard h4{font-family:var(--body);font-weight:600;font-size:16px;line-height:1.25;margin:4px 0 0}
+.bcard .by{font-size:13.5px;color:#55524a}
+.bcard .acts{padding-top:4px}
+.bcard .who{display:flex;gap:6px;flex-wrap:wrap}
+.bcard .who button{font-family:var(--hand);font-size:19px;color:#2f5ea8;line-height:1}
+.bcard.picked::after{content:"";position:absolute;inset:-10px -8px;border:4px solid var(--grease);border-radius:47% 53% 50% 50% / 11% 9% 12% 10%;transform:rotate(1deg);pointer-events:none;opacity:.9}
+.bcard.picked .pick{background:var(--grease);color:#fff}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 18px}
+.libtools{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.libtools input{flex:1 1 260px;max-width:420px;background:#242320;border:1px solid var(--line);color:var(--paper);font:14px var(--mono);padding:10px 12px;border-radius:3px}
+.more{margin:26px auto 0;display:block}
 .foot{border-top:1px solid var(--line);padding-bottom:40px;text-align:center}
 .foot .wrap{padding-top:26px}
 .foot .school{font-family:var(--mono);text-transform:uppercase;font-size:13px;letter-spacing:.14em}
@@ -146,7 +173,8 @@ nav button b{color:var(--grease);font-weight:500}
   .layout > .side{order:2;margin-top:30px}
 }
 @media print{
-  header.top,.side,.acts,.tools,#toast,.sprockets,.foot{display:none!important}
+  header.top,.side,.acts,.tools,#toast,.sprockets,.foot,.chips,.libtools,.more{display:none!important}
+  .bcard{break-inside:avoid;box-shadow:0 0 0 1px #000}
   body{background:#fff;color:#000}.card{box-shadow:0 0 0 1px #000;break-inside:avoid}.card.picked::after{display:none}
   .head h2{color:#000}
 }
@@ -161,6 +189,7 @@ nav button b{color:var(--grease);font-weight:500}
     <nav>
       <button data-go="home">Load film</button>
       <button data-go="sheet">All artists</button>
+      <button data-go="library">Library</button>
       <button data-go="picks">My picks <b id="pickCount">0</b></button>
     </nav>
   </div>
@@ -176,8 +205,9 @@ nav button b{color:var(--grease);font-weight:500}
     <div class="home-extra">
       <button class="btn hot" id="pull">Surprise me: pull 3 frames</button>
       <button class="btn" data-go="sheet">See all artists</button>
+      <button class="btn" data-go="library">Walk the library shelf</button>
     </div>
-    <p class="fine">Artists come from the class list based on Robertson and McDaniel, <i>Themes of Contemporary Art: Visual Art after 1980</i>, from your course materials, and from recent photography prizes and magazines. A match is a starting point, not an answer: look at the real work, read about it, then decide what you can learn from it. Always reference the artists who inspire you.</p>
+    <p class="fine">Artists come from the class list based on Robertson and McDaniel, <i>Themes of Contemporary Art: Visual Art after 1980</i>, from your course materials, and from recent photography prizes and magazines. Artists marked <b>In the library</b> have a book you can borrow at Beanland Library, Saigon South. A match is a starting point, not an answer: look at the real work, read about it, then decide what you can learn from it. Always reference the artists who inspire you.</p>
   </section>
 
   <section class="view quiz" id="v-quiz">
@@ -198,6 +228,7 @@ nav button b{color:var(--grease);font-weight:500}
     <div class="layout">
       <aside class="side">
         <input type="search" id="search" placeholder="Search name, place, word" aria-label="Search artists">
+        <label class="t"><input type="checkbox" id="fLib"> In our library</label>
         <label class="t"><input type="checkbox" id="fClass"> From class materials</label>
         <label class="t"><input type="checkbox" id="fAward"> Prize winners</label>
         <label class="t"><input type="checkbox" id="fKorea"> Korean Contemporary Photographers (book)</label>
@@ -213,8 +244,20 @@ nav button b{color:var(--grease);font-weight:500}
         </div>
         <div class="brief" id="brief"></div>
         <div class="sheet" id="cards"></div>
+        <div id="shelf"></div>
       </div>
     </div>
+  </section>
+
+  <section class="view" id="v-library">
+    <div class="head"><h2>The shelf</h2><span class="edge" id="libCount"></span></div>
+    <div class="brief" id="libBrief"></div>
+    <div class="libtools">
+      <input type="search" id="libSearch" placeholder="Search title, author, call number" aria-label="Search library books">
+    </div>
+    <div class="chips" id="libKinds"></div>
+    <div class="bshelf" id="libCards"></div>
+    <button class="btn more" id="libMore" hidden>Show more books</button>
   </section>
 
   <section class="view" id="v-picks">
@@ -226,6 +269,7 @@ nav button b{color:var(--grease);font-weight:500}
       <button class="btn sm" id="clearPicks">Clear picks</button>
     </div>
     <div class="sheet" id="pickCards"></div>
+    <div id="pickBooks"></div>
   </section>
 </main>
 <footer class="foot">
@@ -241,6 +285,7 @@ nav button b{color:var(--grease);font-weight:500}
 <div id="toast" role="status"></div>
 
 <script src="artists.js"></script>
+<script src="books.js"></script>
 <script>
 (function(){
   const FACETS = ["themes","interests","genres","techniques","moods"];
@@ -249,6 +294,12 @@ nav button b{color:var(--grease);font-weight:500}
   const label = (f,k) => f==="themes" ? VOCAB.themes[k][0] : VOCAB[f][k];
   const $ = id => document.getElementById(id);
   const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+  // ---------- library ----------
+  const KIND = {artist:"Photographer's book", collection:"Collection", how:"How-to", ideas:"Ideas and history"};
+  const BOOK = {}, BOOKS_OF = {};
+  BOOKS.forEach(b => { BOOK[b.id] = b; (b.a || []).forEach(n => (BOOKS_OF[n] = BOOKS_OF[n] || []).push(b)); });
+  Object.values(BOOKS_OF).forEach(l => l.sort((x,y) => (y.y || 0) - (x.y || 0)));
 
   // ---------- assignment paths ----------
   const Q = {
@@ -284,7 +335,7 @@ nav button b{color:var(--grease);font-weight:500}
 
   // ---------- state ----------
   const sel = {}; FACETS.forEach(f => sel[f] = new Set());
-  let path = "free", step = 0, mode = "match", likeOf = null, pulled = [], query = "", fClass = false, fAward = false, fKorea = false, fHanoi = false, picks = [];
+  let path = "free", step = 0, mode = "match", likeOf = null, pulled = [], query = "", fClass = false, fAward = false, fKorea = false, fHanoi = false, fLib = false, libKind = "artist", libQuery = "", libShown = 60, picks = [];
   try { picks = JSON.parse(localStorage.getItem("lensmatch.picks") || "[]"); } catch(e) { picks = []; }
   try { const p = localStorage.getItem("lensmatch.path"); if (p && PATHS[p]) path = p; } catch(e) {}
   function savePicks(){ try { localStorage.setItem("lensmatch.picks", JSON.stringify(picks)); } catch(e) {} $("pickCount").textContent = picks.length; }
@@ -296,7 +347,8 @@ nav button b{color:var(--grease);font-weight:500}
     document.querySelectorAll("nav button").forEach(b => b.setAttribute("aria-current", b.dataset.go === v));
     if (v === "sheet") { syncSide(); render(true); }
     if (v === "picks") renderPicks();
-    $("counter").textContent = "An artist finder for photography projects \u00B7 " + ARTISTS.length + " frames";
+    if (v === "library") { libShown = 60; renderLibrary(); }
+    $("counter").textContent = "An artist finder for photography projects \u00B7 " + ARTISTS.length + " frames \u00B7 " + BOOKS.length + " books";
     window.scrollTo(0,0);
   }
   document.addEventListener("click", e => {
@@ -342,7 +394,7 @@ nav button b{color:var(--grease);font-weight:500}
   $("qShoot").onclick = develop;
 
   document.addEventListener("click", e => {
-    const b = e.target.closest(".opt"); if (!b) return;
+    const b = e.target.closest(".opt"); if (!b || !b.dataset.f) return;
     const f = b.dataset.f, k = b.dataset.k, inQuiz = !!b.closest("#v-quiz");
     if (sel[f].has(k)) sel[f].delete(k);
     else {
@@ -365,7 +417,8 @@ nav button b{color:var(--grease);font-weight:500}
   $("fAward").addEventListener("change", e => { fAward = e.target.checked; mode = "match"; render(false); });
   $("fKorea").addEventListener("change", e => { fKorea = e.target.checked; mode = "match"; render(false); });
   $("fHanoi").addEventListener("change", e => { fHanoi = e.target.checked; mode = "match"; render(false); });
-  $("clear").onclick = () => { clearSel(); query = ""; $("search").value = ""; fClass = fAward = fKorea = fHanoi = false; ["fClass","fAward","fKorea","fHanoi"].forEach(i => $(i).checked = false); mode = "match"; syncSide(); render(false); };
+  $("fLib").addEventListener("change", e => { fLib = e.target.checked; mode = "match"; render(false); });
+  $("clear").onclick = () => { clearSel(); query = ""; $("search").value = ""; fClass = fAward = fKorea = fHanoi = fLib = false; ["fClass","fAward","fKorea","fHanoi","fLib"].forEach(i => $(i).checked = false); mode = "match"; syncSide(); render(false); };
   $("again").onclick = () => { pull(); render(true); };
   $("backMatches").onclick = () => { mode = "match"; render(true); };
 
@@ -373,12 +426,13 @@ nav button b{color:var(--grease);font-weight:500}
   function score(a){
     let s = 0; const hits = [];
     FACETS.forEach(f => a[f].forEach(k => { if (sel[f].has(k)) { s += WEIGHT[f]; hits.push(label(f,k)); } }));
+    if (s && BOOKS_OF[a.name]) s += 1; // a book on the shelf nudges an artist up
     return {s, hits};
   }
   function similar(a, b){
     let s = 0; FACETS.forEach(f => a[f].forEach(k => { if (b[f].includes(k)) s += WEIGHT[f]; })); return s;
   }
-  const text = a => (a.name+" "+a.alt+" "+a.lists.join(" ")+" "+a.place+" "+a.work+" "+a.blurb+" "+a.award+" "+a.courses.join(" ")+" "+FACETS.map(f => a[f].map(k => label(f,k)).join(" ")).join(" ")).toLowerCase();
+  const text = a => (a.name+" "+a.alt+" "+a.lists.join(" ")+" "+a.place+" "+a.work+" "+a.blurb+" "+a.award+" "+a.courses.join(" ")+" "+(BOOKS_OF[a.name] || []).map(b => b.t).join(" ")+" "+FACETS.map(f => a[f].map(k => label(f,k)).join(" ")).join(" ")).toLowerCase();
   const when = a => a.year ? ((a.name.startsWith("The Propeller") || a.name.startsWith("Toiletpaper")) ? "est. " : "b. ") + a.year + " · " : "";
 
   function cardHTML(a, o){
@@ -388,7 +442,11 @@ nav button b{color:var(--grease);font-weight:500}
     const badges = (a.robertson ? `<span class="badge c">Class list</span>` : "") +
       a.courses.filter(c => !(a.robertson && c === "Creative Photography")).map(c => `<span class="badge c">${esc(c)}</span>`).join("") +
       a.lists.map(l => `<span class="badge">${esc(l)}</span>`).join("") +
-      (a.award ? `<span class="badge w">${esc(a.award)}</span>` : "");
+      (a.award ? `<span class="badge w">${esc(a.award)}</span>` : "") +
+      (BOOKS_OF[a.name] ? `<span class="badge l">In the library</span>` : "");
+    const bl = BOOKS_OF[a.name] || [];
+    const slip = bl.length ? `<div class="slip"><div class="h">Borrow at Beanland Library</div>${bl.slice(0,2).map(b =>
+      `<div><a href="${LIBRARY.catalogue(b.id)}" target="_blank" rel="noopener"><i>${esc(b.t)}</i></a>${b.y ? " (" + b.y + ")" : ""} <span class="cn">${esc(b.cn)}</span></div>`).join("")}${bl.length > 2 ? `<div>+ ${bl.length - 2} more on the shelf</div>` : ""}</div>` : "";
     const meter = o.top ? `<div class="meter">Match ${[1,2,3,4,5].map(i => `<i class="${i <= Math.max(1, Math.round(o.s / o.top * 5)) ? "on" : ""}"></i>`).join("")}</div>` : "";
     return `<article class="card ${o.dev ? "dev" : ""} ${picked ? "picked" : ""} ${o.wild ? "wild" : ""}" style="animation-delay:${Math.min(o.i || 0, 11) * 70}ms">
       <div class="strip"><span>${o.wild ? "Wildcard" : "CS 400"}</span><span>&#9656; ${String((o.i || 0) + 1).padStart(2,"0")}${(o.i || 0) % 2 ? "A" : ""}</span></div>
@@ -399,6 +457,7 @@ nav button b{color:var(--grease);font-weight:500}
         ${o.wild ? `<div class="wildnote">not what you asked for. look anyway.</div>` : (o.hits && o.hits.length ? `<div class="why">${esc(o.hits.slice(0,5).join(" + ").toLowerCase())}</div>` : "")}
         <p>${esc(a.blurb)}</p>
         <div class="work">Start with: <b>${esc(a.work)}</b></div>
+        ${slip}
         <div class="tags">${tags}</div>
         <div class="acts">
           ${a.url ? `<a href="${esc(a.url)}" target="_blank" rel="noopener">Website</a>` : `<a href="https://en.wikipedia.org/wiki/Special:Search?search=${q}" target="_blank" rel="noopener">Read</a>`}
@@ -422,7 +481,7 @@ nav button b{color:var(--grease);font-weight:500}
       title = "More like " + src.name; count = "closest 8";
       html = cardHTML(src, {dev, i:0, plain:true}) + l.map((x,i) => cardHTML(x.a, {dev, i:i+1, plain:true, s:x.s, top:l[0].s})).join("");
     } else {
-      let list = ARTISTS.filter(a => (!fClass || a.robertson || a.courses.length) && (!fAward || a.award) && (!fKorea || a.lists.some(l => l.startsWith("Korean Contemporary"))) && (!fHanoi || a.lists.some(l => l.startsWith("Photo Hanoi"))) && (!query || text(a).includes(query))).map(a => ({a, ...score(a)}));
+      let list = ARTISTS.filter(a => (!fClass || a.robertson || a.courses.length) && (!fAward || a.award) && (!fKorea || a.lists.some(l => l.startsWith("Korean Contemporary"))) && (!fHanoi || a.lists.some(l => l.startsWith("Photo Hanoi"))) && (!fLib || BOOKS_OF[a.name]) && (!query || text(a).includes(query))).map(a => ({a, ...score(a)}));
       if (any) {
         list = list.filter(x => x.s > 0).sort((x,y) => y.s - x.s || x.a.name.localeCompare(y.a.name));
         const top = list.length ? list[0].s : 1;
@@ -444,6 +503,54 @@ nav button b{color:var(--grease);font-weight:500}
     $("resTitle").textContent = title; $("resCount").textContent = count;
     $("brief").textContent = (mode === "match" && any && P.brief) ? P.brief + " Check Canvas for the full brief." : "";
     $("cards").innerHTML = html || `<div class="empty">Nothing developed. Remove a filter and try again.</div>`;
+    renderShelf(mode === "match" && any);
+  }
+
+  // books that fit the chosen genres and techniques: collections, how-to and ideas (artist books already sit on the cards)
+  function renderShelf(on){
+    if (!on) { $("shelf").innerHTML = ""; return; }
+    const want = new Set([...sel.genres, ...sel.techniques]);
+    const P = PATHS[path], order = P.strict ? {how:0, collection:1, ideas:2} : {collection:0, how:1, ideas:2};
+    const l = BOOKS.filter(b => b.k !== "artist" && (b.g || []).some(g => want.has(g)))
+      .map(b => ({b, s:(b.g || []).filter(g => want.has(g)).length}))
+      .sort((x,y) => y.s - x.s || order[x.b.k] - order[y.b.k] || (y.b.y || 0) - (x.b.y || 0)).slice(0, 8);
+    $("shelf").innerHTML = l.length ? `<div class="shelfhead"><h3>On the shelf for this</h3><span class="edge">Beanland Library &middot; ${l.length} books</span></div>
+      <p class="shelfnote">collections and how-to books that fit your choices. borrow one this week.</p>
+      <div class="bshelf">${l.map(x => bookHTML(x.b)).join("")}</div>` : "";
+  }
+
+  function bookHTML(b){
+    const picked = picks.includes("book:" + b.id);
+    const who = (b.a || []).map(n => `<button data-like="${esc(n)}">${esc(n)} &rarr;</button>`).join("");
+    return `<article class="bcard ${picked ? "picked" : ""}">
+      <div class="top"><span class="cn">${esc(b.cn)}</span><span class="kind">${KIND[b.k]}${b.n ? " &middot; " + b.n + " copies" : ""}</span></div>
+      <h4>${esc(b.t)}</h4>
+      <div class="by">${esc(b.by || "")}${b.y ? (b.by ? ", " : "") + b.y : ""}</div>
+      ${who ? `<div class="who">${who}</div>` : ""}
+      <div class="acts">
+        <a href="${LIBRARY.catalogue(b.id)}" target="_blank" rel="noopener">Find in catalogue</a>
+        <button class="pick" data-pick="book:${esc(b.id)}">${picked ? "circled" : "circle it"}</button>
+      </div></article>`;
+  }
+
+  // ---------- library view ----------
+  $("libKinds").innerHTML = [["all","Everything"],["artist","Photographers' books"],["collection","Collections"],["how","How-to"],["ideas","Ideas and history"]]
+    .map(([k,n]) => `<button class="opt" data-lib="${k}" aria-pressed="${k === "artist"}">${n}</button>`).join("");
+  $("libKinds").addEventListener("click", e => {
+    const b = e.target.closest("[data-lib]"); if (!b) return;
+    libKind = b.dataset.lib; libShown = 60;
+    document.querySelectorAll("#libKinds .opt").forEach(x => x.setAttribute("aria-pressed", x === b));
+    renderLibrary();
+  });
+  $("libSearch").addEventListener("input", e => { libQuery = e.target.value.trim().toLowerCase(); libShown = 60; renderLibrary(); });
+  $("libMore").onclick = () => { libShown += 90; renderLibrary(); };
+  function renderLibrary(){
+    const l = BOOKS.filter(b => (libKind === "all" || b.k === libKind) &&
+      (!libQuery || (b.t + " " + (b.by || "") + " " + b.cn + " " + (b.a || []).join(" ") + " " + (b.g || []).map(g => VOCAB.genres[g] || VOCAB.techniques[g] || "").join(" ")).toLowerCase().includes(libQuery)));
+    $("libCount").textContent = l.length + " books \u00B7 " + LIBRARY.name;
+    $("libBrief").textContent = "walk the shelf in call-number order, like the real library. start with photographers' own books, or switch to everything. circle what you will borrow.";
+    $("libCards").innerHTML = l.length ? l.slice(0, libShown).map(bookHTML).join("") : `<div class="empty">No book matches. Try another word.</div>`;
+    $("libMore").hidden = l.length <= libShown;
   }
 
   // ---------- picks ----------
@@ -454,23 +561,28 @@ nav button b{color:var(--grease);font-weight:500}
     const n = b.dataset.pick, i = picks.indexOf(n);
     if (i >= 0) picks.splice(i,1); else picks.push(n);
     savePicks();
-    const card = b.closest(".card"); card.classList.toggle("picked", i < 0); b.textContent = i < 0 ? "circled" : "circle it";
+    const card = b.closest(".card, .bcard"); card.classList.toggle("picked", i < 0); b.textContent = i < 0 ? "circled" : "circle it";
     if (i < 0) toast("Circled. See My picks");
     if (b.closest("#v-picks")) renderPicks();
   });
   const pickList = () => picks.map(n => BY[n]).filter(Boolean);
+  const pickBooks = () => picks.filter(n => n.startsWith("book:")).map(n => BOOK[n.slice(5)]).filter(Boolean);
   function renderPicks(){
     const l = pickList(), P = PATHS[path];
     $("picksFor").textContent = P.course + " ▸ " + P.title;
     $("picksBrief").textContent = l.length ? "next: find 2 or 3 real images by each, and write one line on what you will borrow." : "";
+    const bl = pickBooks();
     $("pickCards").innerHTML = l.length ? l.map((a,i) => cardHTML(a, {i, plain:true})).join("")
-      : `<div class="empty">No picks yet. Press "circle it" on any frame.</div>`;
+      : (bl.length ? "" : `<div class="empty">No picks yet. Press "circle it" on any frame or book.</div>`);
+    $("pickBooks").innerHTML = bl.length ? `<div class="shelfhead"><h3>Books to borrow</h3><span class="edge">${LIBRARY.name}</span></div><div class="bshelf">${bl.map(bookHTML).join("")}</div>` : "";
   }
   $("copyPicks").onclick = () => {
-    const l = pickList(), P = PATHS[path]; if (!l.length) { toast("No picks yet"); return; }
+    const l = pickList(), bl = pickBooks(), P = PATHS[path]; if (!l.length && !bl.length) { toast("No picks yet"); return; }
+    const cite = b => `${b.t}${b.by ? ", " + b.by : ""}${b.y ? " (" + b.y + ")" : ""}. Call number ${b.cn}, ${LIBRARY.name}.`;
     const chosen = FACETS.filter(f => sel[f].size).map(f => FNAME[f] + ": " + [...sel[f]].map(k => label(f,k)).join(", "));
     const txt = `Artist research (Contact Sheet)\n${P.course}: ${P.title}\n` + (chosen.length ? "\nWhat I am looking for\n" + chosen.join("\n") + "\n" : "") +
-      "\nPhotographers I am researching\n" + l.map((a,i) => `${i+1}. ${a.name} (${when(a).replace(" · ", ", ")}${a.place})\n   Start with: ${a.work}\n   ${a.blurb}\n   What I will borrow: `).join("\n\n");
+      (l.length ? "\nPhotographers I am researching\n" : "") + l.map((a,i) => `${i+1}. ${a.name} (${when(a).replace(" · ", ", ")}${a.place})\n   Start with: ${a.work}\n   ${a.blurb}\n   What I will borrow: ${BOOKS_OF[a.name] ? "\n   Book in our library: " + cite(BOOKS_OF[a.name][0]) : ""}`).join("\n\n") +
+      (bl.length ? "\n\nPhotobooks I will look at\n" + bl.map((b,i) => `${i+1}. ${cite(b)}`).join("\n") : "");
     (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => toast("Copied"), () => toast("Copy not available here"));
   };
   $("printPicks").onclick = () => window.print();
